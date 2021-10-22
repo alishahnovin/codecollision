@@ -2,11 +2,9 @@ class Game
 {
 	strokeStyle = "#50514F";
 	strokeWidth = 6;
-	fullScreen = false;
-	fullScreenButton = false;
 	winner = false;
 
-	constructor({ canvas, width, height, scale, marginX, marginY, fullScreenButton })
+	constructor({ canvas, width, height, scale, marginX, marginY })
 	{
 		
 		this.marginX = marginX??0;
@@ -19,17 +17,8 @@ class Game
 		this.canvas.width = this.width * scale;
 		this.canvas.height = this.height * scale;
 		this.context = this.canvas.getContext("2d");
-		this.fullScreenButton = fullScreenButton;
-		this.scale = 0.5;
+		this.scale = CodeCollision.GetIsFullScreen() ? 1 : 0.5;
 		this.paused = false;
-		
-		if (document.addEventListener)
-		{
-			document.addEventListener('fullscreenchange', function() { CodeCollision.Game.toggleFullScreen(document.fullscreenElement);}, false);
-			document.addEventListener('mozfullscreenchange', function() { CodeCollision.Game.toggleFullScreen(document.fullscreenElement); }, false);
-			document.addEventListener('MSFullscreenChange', function() { CodeCollision.Game.toggleFullScreen(document.fullscreenElement); }, false);
-			document.addEventListener('webkitfullscreenchange', function() { CodeCollision.Game.toggleFullScreen(document.fullscreenElement); }, false);
-		}
 		
 		this.fieldX = this.marginX;
 		this.fieldY = this.marginY;
@@ -174,8 +163,6 @@ class Game
 	
 	toggleFullScreen = function(fullScreen)
 	{
-		this.fullScreenButton.style.display = fullScreen? 'none' : 'block';
-		this.fullScreen = fullScreen;
 		this.scale = fullScreen? 1 : 0.5;
 		this.redraw();
 		if (fullScreen && !document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement)

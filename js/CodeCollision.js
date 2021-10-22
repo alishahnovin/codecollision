@@ -2,6 +2,7 @@ class CodeCollision
 {
 	static LeaderBoard = false;
 	static Container = false;
+	static FullScreenButton = false;
 	static Label = '';
 	static Rounds = [];
 	static CurrentRound = 0;
@@ -12,6 +13,7 @@ class CodeCollision
 	static StrategySelectors = []; //the inputs, used to verify that the strategy has been selected or not...also used for 'select all/none';
 	static CompetingStrategies = [];
 	static Strategies = []; //these are all the registered stratetgie, not part of the game...
+	
 	
 static Launch({game, container})
 	{
@@ -46,6 +48,20 @@ static Launch({game, container})
 			CodeCollision.LeaderBoard.className = 'leaderBoard';
 			CodeCollision.LeaderBoard.style.display = 'none';
 			document.body.appendChild(CodeCollision.LeaderBoard);
+			
+			CodeCollision.FullScreenButton = document.createElement("button");
+			CodeCollision.FullScreenButton.innerHTML = '&#8689;';
+			CodeCollision.FullScreenButton.style.display = 'none';
+			CodeCollision.FullScreenButton.className = 'fullScreenButton';
+			CodeCollision.FullScreenButton.onclick = function() { CodeCollision.ToggleFullScreen(true); };
+			document.body.appendChild(CodeCollision.FullScreenButton);
+			if (document.addEventListener)
+			{
+				document.addEventListener('fullscreenchange', function() { CodeCollision.ToggleFullScreen(CodeCollision.GetIsFullScreen());}, false);
+				document.addEventListener('mozfullscreenchange', function() { CodeCollision.ToggleFullScreen(CodeCollision.GetIsFullScreen()); }, false);
+				document.addEventListener('MSFullscreenChange', function() { CodeCollision.ToggleFullScreen(CodeCollision.GetIsFullScreen()); }, false);
+				document.addEventListener('webkitfullscreenchange', function() { CodeCollision.ToggleFullScreen(CodeCollision.GetIsFullScreen()); }, false);
+			}
 		});
 	}
 	
@@ -97,6 +113,7 @@ static Launch({game, container})
 	
 	static ShowGameOptions()
 	{
+		CodeCollision.FullScreenButton.style.display = 'none';
 		CodeCollision.StrategySelectors = [];
 		CodeCollision.Container.innerHTML = '';
 		
@@ -220,6 +237,7 @@ static Launch({game, container})
 		{
 			return;
 		}
+		CodeCollision.FullScreenButton.style.display = 'none';
 		CodeCollision.PresentLeaderBoard();
 		CodeCollision.CurrentRound++;
 		let team1 = CodeCollision.Rounds[CodeCollision.CurrentRound].a;
@@ -290,7 +308,8 @@ static Launch({game, container})
 	}
 	
 	static FinishMatch()
-	{		
+	{
+		CodeCollision.FullScreenButton.style.display = 'none';
 		CodeCollision.Container.innerHTML = '';
 		var h1 = document.createElement('h1');
 		h1.innerHTML = CodeCollision.Game.winner? CodeCollision.Game.winner.name + ' wins!' : 'Game ended in draw';
@@ -313,10 +332,22 @@ static Launch({game, container})
 		}
 	}
 	
+	static GetIsFullScreen()
+	{
+		return document.fullscreenElement || document.webkitFullscreenElement ||  document.msFullscreenElement;
+	}
+	
+	static ToggleFullScreen(toggle)
+	{
+		CodeCollision.Game.toggleFullScreen(toggle);
+		CodeCollision.FullScreenButton.style.display = toggle? 'none' : 'block';
+	}
+	
 	static StartMatch(team1, team2)
 	{
 		CodeCollision.Container.innerHTML = '';
 		CodeCollision.HideLeaderBoard();
+		CodeCollision.FullScreenButton.style.display = CodeCollision.GetIsFullScreen()? 'none' : 'block';
 		
 		var canvas = document.createElement("canvas");
 		canvas.id = "gameCanvas";
@@ -324,14 +355,7 @@ static Launch({game, container})
 		canvas.height = "1";
 		CodeCollision.Container.appendChild(canvas);
 		
-		var btn = document.createElement("button");
-		btn.innerHTML = '&#8689;';
-		btn.className = 'fullScreenButton';
-		btn.onclick = function() { CodeCollision.Game.toggleFullScreen(true); };
-		document.body.appendChild(btn);
-		
-		
-		CodeCollision.Game = new CodeCollision.GameType({ canvas: canvas, width:1200, height:700, homeStrategy:team1, awayStrategy:team2, fullScreenButton:btn });
+		CodeCollision.Game = new CodeCollision.GameType({ canvas: canvas, width:1200, height:700, homeStrategy:team1, awayStrategy:team2 });
 		
 		setTimeout(function() { CodeCollision.Game.start(); }, 1000);
 	}
