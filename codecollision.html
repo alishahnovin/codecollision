@@ -1,0 +1,102 @@
+<!DOCTYPE html />
+<html>
+<head>
+<title>code / collision</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Didact+Gothic&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="favicon.png">
+<style type="text/css">
+body
+{
+ overflow:hidden;
+ font-family: 'Didact Gothic', sans-serif;
+}
+.gameContainer {
+	transform: translate(-50%, -50%);
+	position:absolute;  
+	top: 50%;  
+	left: 50%;
+	text-align:center;
+	color: #50514F;
+}
+.menuSelection
+{
+	border: 10px solid #50514F;
+	border-radius:10px;
+	padding:15px;
+	max-height:200px;
+	background-color:#F0F0F0;
+	overflow-y:auto;
+	max-width:450px;
+	margin:15px;
+}
+.optionContainer { display:inline-block;width:100px;background-color:#E0E0E0;margin:5px;text-align:center;padding:5px;font-size:1em; }
+.gameContainer img { display:block; }
+.gameContainer h1
+{
+	font-family: 'Didact Gothic', sans-serif;text-transform:lowercase;font-size:3em;margin:0.5em;font-weight:normal;
+}
+.gameContainer h2
+{
+	font-family: 'Didact Gothic', sans-serif;text-transform:lowercase;font-size:1.2em;margin:0.5em;font-weight:normal;
+}
+.gameContainer canvas 
+{
+	width:0px;height:0px;	
+	background-image:url(fieldlogo.png);
+	background-repeat:no-repeat;
+	background-position:center;
+	background-size:40%;
+	background-color:#70C1B3;
+	border: 0px solid #50514F;
+}
+.home { color: #F25F5C; }
+.away { color: #247BA0; }
+.fullScreenButton
+{
+	position:absolute;
+	bottom:25px;
+	right:25px;
+	font-weight:bold;
+}
+.leaderBoard
+{
+	border: 10px solid #50514F;
+	border-radius:10px;
+	padding:15px;
+	background-color:#F0F0F0;
+	position:absolute;
+	top:15px;
+	right:15px;
+	text-align:center;
+}
+.leaderBoard ol { padding:0px; margin:10px 15px;text-align:left; }
+.leaderBoard li
+{
+	margin:0px;
+	padding:0px;
+	text-align:left;
+}
+</style>
+<title>code / collision</title>
+</head>
+<body>
+ <div class="gameContainer" id="gameContainer"></div>
+</body>
+<script type="text/javascript" src="js/Generics/bootstrap.js"></script>
+<script>
+
+	
+/*
+
+
+7) Game modes!: Turn based / simultaneous
+
+8) skip game - if home!=score then draw/award else nextgame(); end
+
+9) Clean up styles: buttons, leaderboard
+*/
+
+
+</script>
+</html>
