@@ -10,6 +10,7 @@ body
 {
  overflow:hidden;
  font-family: 'Didact Gothic', sans-serif;
+ text-transform:lowercase;
 }
 .gameContainer {
 	transform: translate(-50%, -50%);
@@ -21,7 +22,7 @@ body
 }
 .menuSelection
 {
-	border: 10px solid #50514F;
+	border: 2px solid #247BA0;
 	border-radius:10px;
 	padding:15px;
 	max-height:200px;
@@ -30,15 +31,29 @@ body
 	max-width:450px;
 	margin:15px;
 }
-.optionContainer { display:inline-block;width:100px;background-color:#E0E0E0;margin:5px;text-align:center;padding:5px;font-size:1em; }
+
+.menuSelection::-webkit-scrollbar {
+  width: 10px;
+  margin:5px;
+}
+
+.menuSelection::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.menuSelection::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color:#247BA0;
+}
+.optionContainer { display:inline-block;width:100px;background-color:#E0E0E0;margin:5px;text-align:center;padding:5px;font-size:1em;border-radius:10px;text-transform:lowercase; }
 .gameContainer img { display:block; }
 .gameContainer h1
 {
 	font-family: 'Didact Gothic', sans-serif;text-transform:lowercase;font-size:3em;margin:0.5em;font-weight:normal;
 }
-.gameContainer h2
+select, select:focus, select:active
 {
-	font-family: 'Didact Gothic', sans-serif;text-transform:lowercase;font-size:1.2em;margin:0.5em;font-weight:normal;
+	font-family: 'Didact Gothic', sans-serif;text-transform:lowercase;font-size:2em;margin:0.5em;font-weight:normal; border:0px; display:block; color:#50514F;outline: none; width:400px;text-align:center;
 }
 .gameContainer canvas 
 {
@@ -52,49 +67,60 @@ body
 }
 .home { color: #F25F5C; }
 .away { color: #247BA0; }
-.fullScreenButton
-{
-	position:absolute;
-	bottom:25px;
-	right:25px;
-	font-weight:bold;
-}
 .leaderBoard
 {
-	border: 10px solid #50514F;
-	border-radius:10px;
+	border:2px solid #F25F5C;
+	color: #F25F5C;
 	padding:15px;
 	background-color:#F0F0F0;
+	border-radius:10px;
 	position:absolute;
 	top:15px;
 	right:15px;
 	text-align:center;
 }
-.leaderBoard ol { padding:0px; margin:10px 15px;text-align:left; }
-.leaderBoard li
+.leaderBoard h2 { margin:0px; }
+.leaderBoard table { width:100%; }
+.leaderBoard table tr:first td { font-weight:bold; }
+.leaderBoard tr td:nth-child(3) { text-align:right; }
+button
 {
-	margin:0px;
-	padding:0px;
-	text-align:left;
+	border:2px solid #247BA0;
+	color:#247BA0;
+	border-radius:10px;
+	font-size:1em;
+	text-transform:lowercase;
+	padding:1em 1em;
+	min-width:200px;
+	margin:5px;
+	background-color:#FFFFFF;
+}
+.redBtn { border:2px solid #F25F5C; color: #F25F5C; }
+
+.ingameOptions
+{
+	position:absolute;
+	bottom:25px;
+	right:25px;
+}
+.ingameOptions button
+{
+	border:2px solid #50514F;
+	font-weight:bold;
+	min-width:auto;
+	color:#50514F;
+	background-color:#CCCCCC;
 }
 </style>
 <title>code / collision</title>
 </head>
-<body>
- <div class="gameContainer" id="gameContainer"></div>
-</body>
-<script type="text/javascript" src="js/Generics/bootstrap.js"></script>
-<script>
-
+<body></body>
+<script type="text/javascript" src="js/bootstrap.js"></script>
+<script type="text/javascript">
 	
 /*
 
-
-7) Game modes!: Turn based / simultaneous
-
-8) skip game - if home!=score then draw/award else nextgame(); end
-
-9) Clean up styles: buttons, leaderboard
+**Bug: changing game modes...
 
 10) create a generic, ever running demo game...
 */

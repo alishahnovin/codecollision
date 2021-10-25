@@ -9,11 +9,11 @@ class Player extends GameObject
 		this.strategy = params.strategy;
 	}
 	
-	setDirection = function()
+	setDirection()
 	{
 		if (this.strategy===undefined)
 		{
-			return;
+			return { x:this.x, vx:0, y:this.y, vy:0 };
 		}
 		
 		var teamMates = [];

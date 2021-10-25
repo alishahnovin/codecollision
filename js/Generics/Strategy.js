@@ -4,7 +4,7 @@ class Strategy
 	{
 	}
 
-	execute = function({ self, teamMates, otherTeam})
+	execute({ self, teamMates, otherTeam})
 	{
 		return { angle:0, power: 10 };
 	};

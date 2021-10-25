@@ -1,5 +1,8 @@
-class SoccerStrategy extends Strategy
+class justGoBro extends SoccerStrategy
 {
+	static strategy = CodeCollision.Register(this); //REQUIRED
+	
+	
 	execute //Return Power (0-100), and Angle (0 is forward, 90 is up, -90 is down, 180 is backwards)
 	({
 		id, //Values = Center, LeftWing, RightWing
@@ -24,6 +27,6 @@ class SoccerStrategy extends Strategy
 		*/
 	})
 	{
-		return { angle:180, power: 10 };
+		return { angle: ball.angle, power:100 };
 	};
-};
+}

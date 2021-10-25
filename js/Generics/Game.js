@@ -4,46 +4,51 @@ class Game
 	strokeWidth = 6;
 	winner = false;
 
-	constructor({ canvas, width, height, scale, marginX, marginY })
+	constructor({ homeStrategy, awayStrategy, playerType })
 	{
+		this.canvas  = document.createElement("canvas");
+		this.canvas.width = "1";
+		this.canvas.height = "1";
+		this.context = this.canvas.getContext("2d");
 		
+		this.players = [];
+		this.redraw();
+	}
+	
+	setSize({ width, height, marginX, marginY })
+	{
 		this.marginX = marginX??0;
 		this.marginY = marginY??0;
 		this.width = width + (this.marginX*2);
 		this.height = height + (this.marginY*2);
-		this.canvas = canvas;
 		this.canvas.style.width = 'auto';
 		this.canvas.style.height = 'auto';
-		this.canvas.width = this.width * scale;
-		this.canvas.height = this.height * scale;
-		this.context = this.canvas.getContext("2d");
 		this.scale = CodeCollision.GetIsFullScreen() ? 1 : 0.5;
+		this.canvas.width = this.width * this.scale;
+		this.canvas.height = this.height * this.scale;
 		this.paused = false;
 		
 		this.fieldX = this.marginX;
 		this.fieldY = this.marginY;
 		this.fieldWidth = this.canvas.width;
 		this.fieldHeight = this.canvas.height;
-		
-		this.players = [];
-		this.redraw();
 	}
 	
-	start = function()
+	start()
 	{
 		this.Interval = setInterval(function() { CodeCollision.Game.tick(); }, 10);	
 	};
 	
-	stop = function()
+	stop()
 	{
 		clearInterval(this.Interval);
 	};
 	
-	drawField = function()
+	drawField()
 	{
 	};
 	
-	redraw = function(clear=true)
+	redraw(clear=true)
 	{
 		if (clear)
 		{
@@ -68,8 +73,9 @@ class Game
 		}
 	};
 		
-	drawVector = function({ color, x, y, vx, vy, amplify, radius })
+	drawVector({ color, x, y, vx, vy, amplify, radius })
 	{
+		if (vx==0 && vy==0) { return; }
 		this.context.save();
 		this.context.lineCap = 'round';
 		this.context.strokeStyle = this.strokeStyle;
@@ -97,7 +103,7 @@ class Game
 		this.context.translate(0,0);		
 	};
 
-	checkCollisions = function()
+	checkCollisions()
 	{
 		for(var i=0;i<this.objects.length;i++)
 		{
@@ -109,11 +115,11 @@ class Game
 		}
 	};
 	
-	checkGameConditions = function()
+	checkGameConditions()
 	{
 	};
 	
-	reset = function()
+	reset()
 	{
 		for(var i=0;i<this.objects.length;i++)
 		{
@@ -122,7 +128,7 @@ class Game
 		this.redraw();
 	};
 
-	tick = function()
+	tick()
 	{
 		if(this.paused)
 		{
@@ -149,19 +155,24 @@ class Game
 		{
 			this.redraw();
 			this.paused = true;
-			for(var i=0;i<this.players.length;i++)
-			{
-				var vector = this.players[i].setDirection();
-				vector.radius = this.players[i].radius;
-				vector.color = this.players[i].color;
-				vector.amplify = 20; //got this with guess work, I'll have to go back and figure out the source of this number but I'm guessing it's the decay of velocity.
-				this.drawVector(vector);
-			}
+			this.nextMove();
 			setTimeout(function(game) { game.paused = false; }, 1000, this);
 		}
 	};
 	
-	toggleFullScreen = function(fullScreen)
+	nextMove()
+	{
+		for(var i=0;i<this.players.length;i++)
+		{
+			var vector = this.players[i].setDirection();
+			vector.radius = this.players[i].radius;
+			vector.color = this.players[i].color;
+			vector.amplify = 20; //got this with guess work, I'll have to go back and figure out the source of this number but I'm guessing it's the decay of velocity.
+			this.drawVector(vector);
+		}
+	}
+	
+	toggleFullScreen(fullScreen)
 	{
 		this.scale = fullScreen? 1 : 0.5;
 		this.redraw();

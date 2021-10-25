@@ -1,5 +1,7 @@
 class SoccerGame extends Game
 {
+	static game = CodeCollision.RegisterGameLoaded({ label: 'Soccer', gameType: this, baseStrategy: SoccerStrategy, playerType: Player }); //REQUIRED
+	
 	playerRadius = 20;
 	ballRadius = 10;
 	netWidth = 20;
@@ -7,74 +9,71 @@ class SoccerGame extends Game
 	fieldColor = "#70C1B3";
 	maxScore = 3;
 	scoreMarkerRadius = 15;
+	isReady = false;
 	
 	constructor(params) 
 	{
-		try {
-			params.marginX = 200;
-			params.marginY = 200;
-			
-			super(params);
+		super(params);
+		this.setSize({ width:1200, height:700, marginX:200, marginY: 200});
 		
-			this.homeTeam = new Team({ color: "#F25F5C", strategy:params.homeStrategy, players:
-				[
-					new Player({ id: 'LeftWing', game: this, radius: this.playerRadius, x: this.width/4, y: this.height/3 }),
-					new Player({ id: 'Center', game: this, radius: this.playerRadius, x: this.width/3, y: this.height/2 }),
-					new Player({ id: 'RightWing', game: this, radius: this.playerRadius, x: this.width/4, y: 2*this.height/3 })
-				]
-			});
-			this.awayTeam = new Team({ color: "#247BA0", strategy:params.awayStrategy, isMirrored:true, players:
-				[
-					new Player({ id: 'RightWing', game: this, radius: this.playerRadius, x: this.width/4*3, y: this.height/3 }),
-					new Player({ id: 'Center', game: this, radius: this.playerRadius, x: this.width/3*2, y: this.height/2 }),
-					new Player({ id: 'LeftWing', game: this, radius: this.playerRadius, x: this.width/4*3, y: 2*this.height/3 })
-				]
-			});
-			
-			this.players = [];
-			this.objects = [];
-			for(let i=0;i<this.homeTeam.players.length;i++)
-			{
-				this.players.push(this.homeTeam.players[i]);
-				this.objects.push(this.homeTeam.players[i]);
-				this.homeTeam.players[i].otherTeam = this.awayTeam;
-			}
-			for(let i=0;i<this.awayTeam.players.length;i++)
-			{
-				this.players.push(this.awayTeam.players[i]);
-				this.objects.push(this.awayTeam.players[i]);
-				this.awayTeam.players[i].otherTeam = this.homeTeam;
-			}
-			
-			this.ball = new Ball({ game: this, radius: this.ballRadius, x: this.width/2, y: this.height/2, color: "#FFE066" });
-			this.objects.push(this.ball);
-			
-			this.fieldX = this.marginX;
-			this.fieldY = this.marginY;
-			this.fieldWidth = this.width - (this.marginX*2);
-			this.fieldHeight = this.height - (this.marginY*2);
-			
-			this.homeTeam.net =
-			{
-					topPost : { x:this.fieldX , y:this.fieldY+this.fieldHeight/2 - this.netHeight/2 },
-					bottomPost : { x:this.fieldX , y:this.fieldY+this.fieldHeight/2 + this.netHeight/2}
-			};
-			this.awayTeam.net =
-			{
-					topPost : { x: this.fieldX + this.fieldWidth, y:this.fieldY+this.fieldHeight/2 - this.netHeight/2 },
-					bottomPost : { x: this.fieldX + this.fieldWidth, y:this.fieldY+this.fieldHeight/2 + this.netHeight/2 }
-			};
-			
-			this.redraw();
-		}
-		catch (e)
+		const playerType = params.playerType?? Player;
+		this.homeTeam = new Team({ color: "#F25F5C", strategy:params.homeStrategy, players:
+			[
+				new playerType({ id: 'LeftWing', game: this, radius: this.playerRadius, x: this.width/4, y: this.height/3 }),
+				new playerType({ id: 'Center', game: this, radius: this.playerRadius, x: this.width/3, y: this.height/2 }),
+				new playerType({ id: 'RightWing', game: this, radius: this.playerRadius, x: this.width/4, y: 2*this.height/3 })
+			]
+		});
+		this.awayTeam = new Team({ color: "#247BA0", strategy:params.awayStrategy, isMirrored:true, players:
+			[
+				new playerType({ id: 'RightWing', game: this, radius: this.playerRadius, x: this.width/4*3, y: this.height/3 }),
+				new playerType({ id: 'Center', game: this, radius: this.playerRadius, x: this.width/3*2, y: this.height/2 }),
+				new playerType({ id: 'LeftWing', game: this, radius: this.playerRadius, x: this.width/4*3, y: 2*this.height/3 })
+			]
+		});
+		
+		//this whole constructor could use some cleaning up...
+		this.players = [];
+		this.objects = [];
+		for(let i=0;i<this.homeTeam.players.length;i++)
 		{
-			console.log(e);
+			this.players.push(this.homeTeam.players[i]);
+			this.objects.push(this.homeTeam.players[i]);
+			this.homeTeam.players[i].otherTeam = this.awayTeam;
 		}
+		for(let i=0;i<this.awayTeam.players.length;i++)
+		{
+			this.players.push(this.awayTeam.players[i]);
+			this.objects.push(this.awayTeam.players[i]);
+			this.awayTeam.players[i].otherTeam = this.homeTeam;
+		}
+		
+		this.ball = new Ball({ game: this, radius: this.ballRadius, x: this.width/2, y: this.height/2, color: "#FFE066" });
+		this.objects.push(this.ball);
+		
+		this.fieldX = this.marginX;
+		this.fieldY = this.marginY;
+		this.fieldWidth = this.width - (this.marginX*2);
+		this.fieldHeight = this.height - (this.marginY*2);
+		
+		this.homeTeam.net =
+		{
+				topPost : { x:this.fieldX , y:this.fieldY+this.fieldHeight/2 - this.netHeight/2 },
+				bottomPost : { x:this.fieldX , y:this.fieldY+this.fieldHeight/2 + this.netHeight/2}
+		};
+		this.awayTeam.net =
+		{
+				topPost : { x: this.fieldX + this.fieldWidth, y:this.fieldY+this.fieldHeight/2 - this.netHeight/2 },
+				bottomPost : { x: this.fieldX + this.fieldWidth, y:this.fieldY+this.fieldHeight/2 + this.netHeight/2 }
+		};
+		
+		this.isReady = true;
+		this.redraw();
 	}
 	
-	drawField = function()
+	drawField()
 	{
+		if(!this.isReady) { return; }
 		this.canvas.style.borderWidth = this.fullScreen? '0px' : '25px';
 		this.canvas.style.borderRadius = this.fullScreen? '0px' : '100px';
 		CodeCollision.Container.style.width = this.fullScreen? "100%" : 'auto';
@@ -140,8 +139,10 @@ class SoccerGame extends Game
 		this.context.stroke();
 	};
 	
-	checkGameConditions = function()
+	checkGameConditions()
 	{
+		if(!this.isReady) { return; }
+		
 		if (this.ball.x - this.ball.radius*this.scale - this.context.lineWidth <= this.homeTeam.net.topPost.x+this.context.lineWidth && this.ball.y>=this.homeTeam.net.topPost.y && this.ball.y<=this.homeTeam.net.bottomPost.y)
 		{
 			this.awayTeam.score++;

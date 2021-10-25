@@ -1,5 +1,8 @@
-class SoccerStrategy extends Strategy
+class brando extends SoccerStrategy
 {
+	static strategy = CodeCollision.Register(this); //REQUIRED
+	
+	
 	execute //Return Power (0-100), and Angle (0 is forward, 90 is up, -90 is down, 180 is backwards)
 	({
 		id, //Values = Center, LeftWing, RightWing
@@ -24,6 +27,19 @@ class SoccerStrategy extends Strategy
 		*/
 	})
 	{
-		return { angle:180, power: 10 };
+		if (id=='Center')
+		{
+			return { angle: Math.abs(ball.angle)<45? ball.angle*1.1 : 180, power: 100 };
+		}
+		else if (id=='LeftWing')
+		{
+			return { angle: Math.abs(ball.angle)<25? ball.angle*1.1 : 180, power: 100 };
+		}
+		else if (id=='RightWing')
+		{
+			return { angle: Math.floor(Math.random() * 10)-5 + ball.angle, power: 100 };
+		}
+		
+		return { angle:0, power:100 };
 	};
-};
+}

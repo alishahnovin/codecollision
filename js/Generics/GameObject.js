@@ -17,7 +17,7 @@ class GameObject
 	};
 	
 	
-	reset = function()
+	reset()
 	{
 		this.x = this.startingX;
 		this.y = this.startingY;
