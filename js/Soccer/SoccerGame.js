@@ -74,10 +74,11 @@ class SoccerGame extends Game
 	drawField()
 	{
 		if(!this.isReady) { return; }
-		this.canvas.style.borderWidth = this.fullScreen? '0px' : '25px';
-		this.canvas.style.borderRadius = this.fullScreen? '0px' : '100px';
-		CodeCollision.Container.style.width = this.fullScreen? "100%" : 'auto';
-		CodeCollision.Container.style.backgroundColor = this.fullScreen? this.fieldColor : '';
+		const isFullScreen = CodeCollision.GetIsFullScreen();
+		this.canvas.style.borderWidth = isFullScreen? '0px' : '25px';
+		this.canvas.style.borderRadius = isFullScreen? '0px' : '100px';
+		CodeCollision.Container.style.width = isFullScreen? "100%" : 'auto';
+		CodeCollision.Container.style.backgroundColor = isFullScreen? this.fieldColor : '';
 		
 		
 		this.context.strokeStyle = this.strokeStyle;

@@ -36,11 +36,13 @@ class Game
 	
 	start()
 	{
-		this.Interval = setInterval(function() { CodeCollision.Game.tick(); }, 10);	
+		this.Interval = setInterval(function() { CodeCollision.Game.tick(); }, 10);
 	};
 	
 	stop()
 	{
+		this.isReady = false;
+		this.paused = true;
 		clearInterval(this.Interval);
 	};
 	

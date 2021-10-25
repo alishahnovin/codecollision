@@ -179,6 +179,8 @@ class CodeCollision
 	static PresentGameOptions()
 	{
 		CodeCollision.Container.innerHTML = '';
+		CodeCollision.Container.style.width = 'auto';
+		CodeCollision.Container.style.backgroundColor = '';
 		
 		document.title = ("code / collision: " + CodeCollision.GameType.label).toLowerCase();
 		CodeCollision.PresentHeader();
@@ -318,6 +320,8 @@ class CodeCollision
 		{
 			return;
 		}
+		CodeCollision.Container.style.width = 'auto';
+		CodeCollision.Container.style.backgroundColor = '';
 		CodeCollision.InGameOptions.style.display = 'none';
 		CodeCollision.PresentLeaderBoard();
 		CodeCollision.CurrentRound++;
@@ -411,6 +415,8 @@ class CodeCollision
 		document.title = ("code / collision: " + CodeCollision.GameType.label).toLowerCase();
 		
 		CodeCollision.InGameOptions.style.display = 'none';
+		CodeCollision.Container.style.width = 'auto';
+		CodeCollision.Container.style.backgroundColor = '';
 		CodeCollision.Container.innerHTML = '';
 		var h1 = document.createElement('h1');
 		h1.innerHTML = CodeCollision.Game.winner? CodeCollision.Game.winner.name + ' wins!' : 'Game ended in draw';
@@ -419,7 +425,6 @@ class CodeCollision
 		{
 			CodeCollision.CompetingStrategies[CodeCollision.Game.winner.name].wins++;
 		}
-		
 		CodeCollision.Container.appendChild(h1);
 		
 		CodeCollision.PresentLeaderBoard();
@@ -440,7 +445,10 @@ class CodeCollision
 	
 	static ToggleFullScreen(toggle)
 	{
-		CodeCollision.Game.toggleFullScreen(toggle);
+		if (CodeCollision.Game)
+		{
+			CodeCollision.Game.toggleFullScreen(toggle);
+		}
 		CodeCollision.InGameOptions.style.display = toggle? 'none' : 'block';
 	}
 	
