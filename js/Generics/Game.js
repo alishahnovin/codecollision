@@ -1,17 +1,36 @@
 class Game 
 {
 	strokeStyle = "#50514F";
+	fieldLines = "#C3E5DF";
 	strokeWidth = 6;
 	winner = false;
-
-	constructor({ homeStrategy, awayStrategy, playerType })
+	
+	drag = 1.025;
+	
+	players = [];
+	objects = [];
+	
+	constructor({ homeStrategy, awayStrategy, playerType, teamType })
 	{
+		this.fieldX = 0;
+		this.fieldY = 0;
+		this.fieldWidth = 0;
+		this.fieldHeight = 0;
+		this.fieldRadius = 0;
+		
 		this.canvas  = document.createElement("canvas");
 		this.canvas.width = "1";
 		this.canvas.height = "1";
 		this.context = this.canvas.getContext("2d");
 		
+		this.playerType = playerType?? Player;
+		this.teamType = teamType?? Team;
+		
 		this.players = [];
+		this.objects = [];
+		this.homeTeam = new this.teamType({ game:this, color: "#F25F5C", strategy:homeStrategy});
+		this.awayTeam = new this.teamType({ game:this, color: "#247BA0", strategy:awayStrategy, isMirrored:true});
+		
 		this.redraw();
 	}
 	
@@ -30,13 +49,14 @@ class Game
 		
 		this.fieldX = this.marginX;
 		this.fieldY = this.marginY;
-		this.fieldWidth = this.canvas.width;
-		this.fieldHeight = this.canvas.height;
+		this.fieldWidth = this.width - (this.marginX*2);
+		this.fieldHeight = this.height - (this.marginY*2);
 	}
 	
 	start()
 	{
-		this.Interval = setInterval(function() { CodeCollision.Game.tick(); }, 10);
+		this.reset();
+		this.Interval = setInterval(function() { if (CodeCollision.Game==null) { return ; } CodeCollision.Game.tick(); }, 10);
 	};
 	
 	stop()
@@ -107,9 +127,9 @@ class Game
 
 	checkCollisions()
 	{
-		for(var i=0;i<this.objects.length;i++)
+		for(let i=0;i<this.objects.length;i++)
 		{
-			for(var j=i+1;j<this.objects.length;j++)
+			for(let j=i+1;j<this.objects.length;j++)
 			{
 				this.objects[i].objectCollision(this.objects[j]);
 			}
@@ -123,7 +143,7 @@ class Game
 	
 	reset()
 	{
-		for(var i=0;i<this.objects.length;i++)
+		for(let i=0;i<this.objects.length;i++)
 		{
 			this.objects[i].reset();
 		}
@@ -139,8 +159,8 @@ class Game
 		
 		this.checkGameConditions();
 		this.checkCollisions();
-		var isThereMovement = false;
-		for(var i=0;i<this.objects.length;i++)
+		let isThereMovement = false;
+		for(let i=0;i<this.objects.length;i++)
 		{
 			this.objects[i].advance();
 			if (Math.abs(this.objects[i].vx)>=0.25 || Math.abs(this.objects[i].vy)>=0.25)
@@ -164,38 +184,13 @@ class Game
 	
 	nextMove()
 	{
-		for(var i=0;i<this.players.length;i++)
+		for(let i=0;i<this.players.length;i++)
 		{
-			var vector = this.players[i].setDirection();
+			let vector = this.players[i].setDirection();
 			vector.radius = this.players[i].radius;
 			vector.color = this.players[i].color;
 			vector.amplify = 20; //got this with guess work, I'll have to go back and figure out the source of this number but I'm guessing it's the decay of velocity.
 			this.drawVector(vector);
 		}
 	}
-	
-	toggleFullScreen(fullScreen)
-	{
-		this.scale = fullScreen? 1 : 0.5;
-		this.redraw();
-		if (fullScreen && !document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement)
-		{
-			if (document.documentElement.requestFullscreen)
-			{
-				document.documentElement.requestFullscreen();
-			}
-			else if (document.documentElement.msRequestFullscreen)
-			{
-				document.documentElement.msRequestFullscreen();
-			}
-			else if (document.documentElement.mozRequestFullScreen)
-			{
-				document.documentElement.mozRequestFullScreen();
-			}
-			else if (document.documentElement.webkitRequestFullscreen)
-			{
-				document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
-			}
-		}
-	};
 }

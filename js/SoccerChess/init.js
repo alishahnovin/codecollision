@@ -1,9 +1,11 @@
 require(
 [
-'js/SoccerChess/SoccerChessGame.js',
+'js/Soccer/SoccerBall.js',
+'js/Soccer/SoccerNet.js',
+'js/Soccer/SoccerPlayer.js',
+'js/Soccer/SoccerTeam.js',
+'js/Soccer/SoccerStrategy.js',
 'js/Soccer/SoccerGame.js',
-'js/Soccer/Ball.js',
 'js/SoccerChess/SoccerChessPlayer.js',
-'js/Soccer/Player.js',
-'js/Soccer/Team.js',
-'js/Soccer/SoccerStrategy.js' ]);
+'js/SoccerChess/SoccerChessGame.js'
+]);

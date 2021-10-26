@@ -11,14 +11,23 @@ class CodeCollision
 	static CompetingStrategies = []; //these are the strategies that are selected to go head to head for a competition
 	static Strategies = []; //these are all the registered stratetgie, not part of the game...
 	
-	static GameTypes = {
-		'Soccer':{ path:'soccer', hasLaunched:false },
-		'Soccer Chess':{ path:'soccerchess', hasLaunched:false },
+	static GameTypes =
+	{
+		'Soccer':'soccer',
+		'Soccer Chess':'soccerchess',
+		'Sumo':'sumo',
 	};
 	static GameType = false;
 	
 	static Initialize()
 	{
+		var gameTypes = CodeCollision.GameTypes;
+		CodeCollision.GameTypes = [];
+		for(var gameType in gameTypes)
+		{
+			CodeCollision.RegisterGameType(gameType, gameTypes[gameType]);
+		}		
+		
 		CodeCollision.Container = document.createElement("div");
 		CodeCollision.Container.className = 'gameContainer';
 		document.body.appendChild(CodeCollision.Container);
@@ -72,22 +81,23 @@ class CodeCollision
 	
 	static Launch(game)
 	{
-		require([ 
-		 'js/'+game+'/init.js',
-		 'js/Generics/Game.js',
-		 'js/Generics/GameObject.js',
-		 'js/Generics/Strategy.js'
-		]);
+		require('js/'+game+'/init.js');
 	}
 	
-	static RegisterGameLoaded({ label, gameType, baseStrategy, playerType })
+	static RegisterGameLoaded({ label, gameType, baseStrategy, playerType, teamType })
 	{
 		CodeCollision.GameTypes[label].label = label;
 		CodeCollision.GameTypes[label].baseStrategy = baseStrategy;
 		CodeCollision.GameTypes[label].gameType = gameType;
 		CodeCollision.GameTypes[label].playerType = playerType;
+		CodeCollision.GameTypes[label].teamType = teamType;
 		CodeCollision.GameTypes[label].hasLaunched = true;
 		CodeCollision.PresentGameOptions();
+	}
+	
+	static RegisterGameType(label, path)
+	{
+		CodeCollision.GameTypes[label] = { path:path, hasLaunched:false };
 	}
 	
 	static Register(type)
@@ -112,15 +122,11 @@ class CodeCollision
 			var reader = new FileReader();
 			reader.onload = function(e)
 			{
-				try {
 				var contents = e.target.result;
 				var script = document.createElement("script");
-				script.textContent = contents;
+				script.textContent = 'try { ' + contents + ' } catch(e) { console.log("Failed to load file: " + e); }';
 				document.body.appendChild(script);
 				filesLoaded++;
-				} catch (e) {
-					console.log(e);
-				}
 			};
 			filesToLoad++;
 			reader.readAsText(file);
@@ -140,7 +146,7 @@ class CodeCollision
 	{
 		CodeCollision.Container.innerHTML = '';
 		var img = document.createElement('img');
-		img.src = "smalllogo.png";
+		img.src = "assets/smalllogo.png";
 		CodeCollision.Container.appendChild(img);
 		
 		var selectGame = document.createElement('select');
@@ -179,8 +185,8 @@ class CodeCollision
 	static PresentGameOptions()
 	{
 		CodeCollision.Container.innerHTML = '';
-		CodeCollision.Container.style.width = 'auto';
-		CodeCollision.Container.style.backgroundColor = '';
+		
+		CodeCollision.Container.className = "gameContainer";
 		
 		document.title = ("code / collision: " + CodeCollision.GameType.label).toLowerCase();
 		CodeCollision.PresentHeader();
@@ -200,10 +206,6 @@ class CodeCollision
 		strategyActionBtn.innerHTML = "Load Strategies";
 		strategyActionBtn.onclick = function() { strategyFiles.click(); }
 		CodeCollision.Container.appendChild(strategyActionBtn);
-		
-		
-		//TODO: Remove strategies that don't apply to the base type...
-		
 		
 		if (CodeCollision.Strategies.filter(x => x.prototype instanceof CodeCollision.GameType.baseStrategy).length>0)
 		{
@@ -233,7 +235,7 @@ class CodeCollision
 			
 			for(let i=0;i<CodeCollision.Strategies.length;i++)
 			{
-				if (!CodeCollision.Strategies[i].prototype instanceof CodeCollision.GameType.baseStrategy)
+				if (!(CodeCollision.Strategies[i].prototype instanceof CodeCollision.GameType.baseStrategy))
 				{
 					continue;
 				}
@@ -320,8 +322,7 @@ class CodeCollision
 		{
 			return;
 		}
-		CodeCollision.Container.style.width = 'auto';
-		CodeCollision.Container.style.backgroundColor = '';
+		CodeCollision.Container.className = "gameContainer";
 		CodeCollision.InGameOptions.style.display = 'none';
 		CodeCollision.PresentLeaderBoard();
 		CodeCollision.CurrentRound++;
@@ -332,9 +333,12 @@ class CodeCollision
 		CodeCollision.CompetingStrategies[team2.name].hasCompeted = true;
 		
 		CodeCollision.Container.innerHTML = '';
-		var h2 = document.createElement('h2');
-		h2.innerHTML = 'Round '+(CodeCollision.CurrentRound+1)+' of '+CodeCollision.Rounds.length;
-		CodeCollision.Container.appendChild(h2);
+		if(CodeCollision.Rounds.length>1)
+		{
+			var h2 = document.createElement('h2');
+			h2.innerHTML = 'Round '+(CodeCollision.CurrentRound+1)+' of '+CodeCollision.Rounds.length;
+			CodeCollision.Container.appendChild(h2);
+		}
 		
 		var h1 = document.createElement('h1');
 		h1.innerHTML = '<span class="home">'+team1.name+'</span> vs. <span class="away">'+team2.name+'</span>';
@@ -415,12 +419,12 @@ class CodeCollision
 		document.title = ("code / collision: " + CodeCollision.GameType.label).toLowerCase();
 		
 		CodeCollision.InGameOptions.style.display = 'none';
-		CodeCollision.Container.style.width = 'auto';
-		CodeCollision.Container.style.backgroundColor = '';
+		CodeCollision.Container.className = "gameContainer";
 		CodeCollision.Container.innerHTML = '';
 		var h1 = document.createElement('h1');
-		h1.innerHTML = CodeCollision.Game.winner? CodeCollision.Game.winner.name + ' wins!' : 'Game ended in draw';
-		
+		let h1Class = CodeCollision.Game.winner && CodeCollision.Game.winner == CodeCollision.Game.homeTeam.strategy? 'home' : 'away';
+		h1.innerHTML = CodeCollision.Game.winner? '<span class="'+h1Class+'">'+CodeCollision.Game.winner.name + '</span> wins!' : 'Game ended in draw';
+		CodeCollision.Game.stop();
 		if (CodeCollision.Game.winner)
 		{
 			CodeCollision.CompetingStrategies[CodeCollision.Game.winner.name].wins++;
@@ -447,8 +451,29 @@ class CodeCollision
 	{
 		if (CodeCollision.Game)
 		{
-			CodeCollision.Game.toggleFullScreen(toggle);
+			CodeCollision.Game.scale = toggle? 1 : 0.5;
+			CodeCollision.Game.redraw();
 		}
+		if (toggle && !document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement)
+		{
+			if (document.documentElement.requestFullscreen)
+			{
+				document.documentElement.requestFullscreen();
+			}
+			else if (document.documentElement.msRequestFullscreen)
+			{
+				document.documentElement.msRequestFullscreen();
+			}
+			else if (document.documentElement.mozRequestFullScreen)
+			{
+				document.documentElement.mozRequestFullScreen();
+			}
+			else if (document.documentElement.webkitRequestFullscreen)
+			{
+				document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+			}
+		}
+		CodeCollision.Container.className = toggle? "fullScreenGameContainer" : "gameContainer";
 		CodeCollision.InGameOptions.style.display = toggle? 'none' : 'block';
 	}
 	
@@ -457,8 +482,9 @@ class CodeCollision
 		CodeCollision.Container.innerHTML = '';
 		CodeCollision.HideLeaderBoard();
 		CodeCollision.InGameOptions.style.display = CodeCollision.GetIsFullScreen()? 'none' : 'block';
+		CodeCollision.Container.className = CodeCollision.GetIsFullScreen()? "fullScreenGameContainer" : "gameContainer";
 		
-		CodeCollision.Game = new CodeCollision.GameType.gameType({ homeStrategy:team1, awayStrategy:team2, playerType:CodeCollision.GameType.playerType });
+		CodeCollision.Game = new CodeCollision.GameType.gameType({ homeStrategy:team1, awayStrategy:team2, playerType:CodeCollision.GameType.playerType, teamType: CodeCollision.GameType.teamType });
 		CodeCollision.Container.appendChild(CodeCollision.Game.canvas);
 		
 		setTimeout(function() { CodeCollision.Game.start(); }, 1000);

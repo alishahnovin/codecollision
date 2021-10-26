@@ -1,71 +1,34 @@
 class SoccerGame extends Game
 {
-	static game = CodeCollision.RegisterGameLoaded({ label: 'Soccer', gameType: this, baseStrategy: SoccerStrategy, playerType: Player }); //REQUIRED
+	static game = CodeCollision.RegisterGameLoaded({ label: 'Soccer', gameType: this, baseStrategy: SoccerStrategy, playerType: SoccerPlayer, teamType: SoccerTeam }); //REQUIRED
 	
-	playerRadius = 20;
-	ballRadius = 10;
-	netWidth = 20;
-	netHeight = 200;
-	fieldColor = "#70C1B3";
 	maxScore = 3;
 	scoreMarkerRadius = 15;
 	isReady = false;
+	
+	initialPositions =
+	{
+		'-1':{ home:{x: 1/4, y:1/3}, away:{x: 3/4, y:1/3} },
+		'0':{ home:{x: 1/3, y:1/2}, away:{x: 2/3, y:1/2} },
+		'1':{ home:{x: 1/4, y:2/3}, away:{x: 3/4, y:2/3} }
+	};
 	
 	constructor(params) 
 	{
 		super(params);
 		this.setSize({ width:1200, height:700, marginX:200, marginY: 200});
 		
-		const playerType = params.playerType?? Player;
-		this.homeTeam = new Team({ color: "#F25F5C", strategy:params.homeStrategy, players:
-			[
-				new playerType({ id: 'LeftWing', game: this, radius: this.playerRadius, x: this.width/4, y: this.height/3 }),
-				new playerType({ id: 'Center', game: this, radius: this.playerRadius, x: this.width/3, y: this.height/2 }),
-				new playerType({ id: 'RightWing', game: this, radius: this.playerRadius, x: this.width/4, y: 2*this.height/3 })
-			]
-		});
-		this.awayTeam = new Team({ color: "#247BA0", strategy:params.awayStrategy, isMirrored:true, players:
-			[
-				new playerType({ id: 'RightWing', game: this, radius: this.playerRadius, x: this.width/4*3, y: this.height/3 }),
-				new playerType({ id: 'Center', game: this, radius: this.playerRadius, x: this.width/3*2, y: this.height/2 }),
-				new playerType({ id: 'LeftWing', game: this, radius: this.playerRadius, x: this.width/4*3, y: 2*this.height/3 })
-			]
-		});
+		this.homeTeam.net = new SoccerNet({ x: this.fieldX, y:this.fieldY+this.fieldHeight/2 });
+		this.awayTeam.net = new SoccerNet({ x: this.fieldX + this.fieldWidth, y:this.fieldY+this.fieldHeight/2 })
 		
-		//this whole constructor could use some cleaning up...
-		this.players = [];
-		this.objects = [];
-		for(let i=0;i<this.homeTeam.players.length;i++)
+		for(let key in this.initialPositions)
 		{
-			this.players.push(this.homeTeam.players[i]);
-			this.objects.push(this.homeTeam.players[i]);
-			this.homeTeam.players[i].otherTeam = this.awayTeam;
-		}
-		for(let i=0;i<this.awayTeam.players.length;i++)
-		{
-			this.players.push(this.awayTeam.players[i]);
-			this.objects.push(this.awayTeam.players[i]);
-			this.awayTeam.players[i].otherTeam = this.homeTeam;
+			this.homeTeam.addPlayer(key, this.width * this.initialPositions[key].home.x, this.height * this.initialPositions[key].home.y);
+			this.awayTeam.addPlayer(key, this.width * this.initialPositions[key].away.x, this.height * this.initialPositions[key].away.y);
 		}
 		
-		this.ball = new Ball({ game: this, radius: this.ballRadius, x: this.width/2, y: this.height/2, color: "#FFE066" });
+		this.ball = new SoccerBall({ game: this, x: this.width/2, y: this.height/2, color: "#FFE066" });
 		this.objects.push(this.ball);
-		
-		this.fieldX = this.marginX;
-		this.fieldY = this.marginY;
-		this.fieldWidth = this.width - (this.marginX*2);
-		this.fieldHeight = this.height - (this.marginY*2);
-		
-		this.homeTeam.net =
-		{
-				topPost : { x:this.fieldX , y:this.fieldY+this.fieldHeight/2 - this.netHeight/2 },
-				bottomPost : { x:this.fieldX , y:this.fieldY+this.fieldHeight/2 + this.netHeight/2}
-		};
-		this.awayTeam.net =
-		{
-				topPost : { x: this.fieldX + this.fieldWidth, y:this.fieldY+this.fieldHeight/2 - this.netHeight/2 },
-				bottomPost : { x: this.fieldX + this.fieldWidth, y:this.fieldY+this.fieldHeight/2 + this.netHeight/2 }
-		};
 		
 		this.isReady = true;
 		this.redraw();
@@ -77,11 +40,8 @@ class SoccerGame extends Game
 		const isFullScreen = CodeCollision.GetIsFullScreen();
 		this.canvas.style.borderWidth = isFullScreen? '0px' : '25px';
 		this.canvas.style.borderRadius = isFullScreen? '0px' : '100px';
-		CodeCollision.Container.style.width = isFullScreen? "100%" : 'auto';
-		CodeCollision.Container.style.backgroundColor = isFullScreen? this.fieldColor : '';
 		
-		
-		this.context.strokeStyle = this.strokeStyle;
+		this.context.strokeStyle = this.fieldLines;
 		this.context.lineCap = 'round';
 		this.context.lineWidth = Math.min(this.strokeWidth*this.scale);
 		
@@ -97,6 +57,7 @@ class SoccerGame extends Game
 		this.context.closePath();
 		this.context.stroke();
 		
+		this.context.strokeStyle = this.strokeStyle;
 		let scoreMarkerRadius = this.scoreMarkerRadius*this.scale;
 		let scoreMarkerMarginX = (scoreMarkerRadius*3);
 		let scoreMarkerMarginY = (scoreMarkerRadius*3/2);
@@ -126,14 +87,14 @@ class SoccerGame extends Game
 		}
 		
 		this.context.beginPath();
-		this.context.rect((this.homeTeam.net.topPost.x- this.netWidth) * this.scale + this.context.lineWidth/2, this.homeTeam.net.topPost.y* this.scale,this.netWidth*this.scale, this.netHeight*this.scale);
+		this.context.rect((this.homeTeam.net.topPost.x- this.homeTeam.net.width) * this.scale + this.context.lineWidth/2, this.homeTeam.net.topPost.y* this.scale,this.homeTeam.net.width*this.scale, this.homeTeam.net.height*this.scale);
 		this.context.fillStyle = this.homeTeam.color;
 		this.context.closePath();
 		this.context.fill();
 		this.context.stroke();
 		
 		this.context.beginPath();
-		this.context.rect(this.awayTeam.net.topPost.x * this.scale - this.context.lineWidth/2, this.awayTeam.net.topPost.y* this.scale,this.netWidth*this.scale, this.netHeight*this.scale);
+		this.context.rect(this.awayTeam.net.topPost.x * this.scale - this.context.lineWidth/2, this.awayTeam.net.topPost.y* this.scale,this.homeTeam.net.width*this.scale, this.homeTeam.net.height*this.scale);
 		this.context.fillStyle = this.awayTeam.color;
 		this.context.closePath();
 		this.context.fill();

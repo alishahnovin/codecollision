@@ -4,37 +4,33 @@ class GameObject
 	{
 		this.game = game;
 		this.color = color;
-		this.radius = radius;
+		
 		this.isMoving = false;
 		this.vx = 0;
 		this.vy = 0;
-		this.x = x;
-		this.y = y;
+		this.x = x?? 0;
+		this.y = y?? 0;
 		this.isMirrored = isMirrored?? false;
 	
-		this.startingX = this.x;
-		this.startingY = this.y;
+		this.initialX = this.x;
+		this.initialY = this.y;
 	};
-	
 	
 	reset()
 	{
-		this.x = this.startingX;
-		this.y = this.startingY;
+		this.x = this.initialX;
+		this.y = this.initialY;
 		this.vx = 0;
 		this.vy = 0;
 	};
 
-	
-	//move to it's own class
-	
 	advance()
 	{
 		this.x+=this.vx;
 		this.y+=this.vy;
 		
-		this.vx /= 1.025;
-		this.vy /= 1.025;
+		this.vx /= this.game.drag;
+		this.vy /= this.game.drag;
 	};
 	
 	boundaryCollision()
@@ -52,7 +48,6 @@ class GameObject
 	
 	objectCollision(that)
 	{
-	
 		let dist = Math.sqrt((this.x - that.x)**2 + (this.y - that.y)**2);
 
 		if (dist < this.radius + this.radius) {              
@@ -109,6 +104,6 @@ class GameObject
 	{
 		let distance = Math.sqrt((this.x - that.x)**2 + (this.y - that.y)**2);
 		let angle = Math.atan2(that.y - this.y, that.x - this.x)*180/Math.PI;
-		return { angle: this.isMirrored? (angle<0? 180+angle : angle-180) : -1*angle, distance: distance };
+		return { angle: this.isMirrored? (angle<0? 180+angle : angle-180) : -1*angle, distance: distance, x:this.isMirrored? this.game.fieldWidth-(that.x-this.game.fieldX) : that.x, y:that.y-this.game.fieldY };
 	}
 }

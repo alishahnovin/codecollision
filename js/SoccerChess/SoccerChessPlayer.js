@@ -1,4 +1,4 @@
-class SoccerChessPlayer extends Player
+class SoccerChessPlayer extends SoccerPlayer
 {
 	constructor(params)
 	{

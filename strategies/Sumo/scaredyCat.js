@@ -11,7 +11,7 @@
 	
 	0 is directly in front, 180 is directly behind, 90 is directly above, -90 is directly below, 
 */
-class scaredyCat extends SoccerStrategy
+class scaredySumo extends SumoStrategy
 {
 	static strategy = CodeCollision.Register(this); //REQUIRED
 	
@@ -27,6 +27,6 @@ class scaredyCat extends SoccerStrategy
 		otherGoal //{ topPost{angle, distance, x, y},  bottomPost{angle, distance, x, y} }
 	})
 	{
-		return { angle:  -90, power:100 };
+		return { angle:  Math.floor(Math.random() * 360), power:50 };
 	};
 }

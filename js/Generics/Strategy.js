@@ -4,7 +4,7 @@ class Strategy
 	{
 	}
 
-	execute({ self, teamMates, otherTeam})
+	execute()
 	{
 		return { angle:0, power: 10 };
 	};
