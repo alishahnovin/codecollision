@@ -13,6 +13,7 @@ class CodeCollision
 	
 	static GameTypes =
 	{
+		'Floor is Lava':'floorislava',
 		'Soccer':'soccer',
 		'Soccer Chess':'soccerchess',
 		'Sumo':'sumo',
@@ -224,7 +225,7 @@ class CodeCollision
 				}
 				if (strategies.length>0)
 				{
-					CodeCollision.StartGame(strategies);
+					CodeCollision.StartGame(strategies.sort(()=>{ return Math.random() - 0.5; }));
 				}
 			};
 			CodeCollision.Container.appendChild(startBtn);
@@ -313,7 +314,7 @@ class CodeCollision
 				rounds.push({ a:items[i], b:items[j] });
 			}
 		}
-		return rounds.length==0? [ { a:items[0],  b:items[0] } ] : rounds.sort(()=>Math.random() - 0.5);
+	return rounds.length==0? [ { a:items[0],  b:items[0] } ] : rounds.sort(()=>{return Math.random() - 0.5;});
 	}
 	
 	static PresentMatch()

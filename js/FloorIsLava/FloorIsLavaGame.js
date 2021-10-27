@@ -1,10 +1,11 @@
-class SumoGame extends Game
+class FloorIsLavaGame extends Game
 {
-	static game = CodeCollision.RegisterGameLoaded({ label: 'Sumo', gameType: this, baseStrategy: SumoStrategy, playerType: SumoPlayer }); //REQUIRED
+	static game = CodeCollision.RegisterGameLoaded({ label: 'Floor is Lava', gameType: this, baseStrategy: FloorIsLavaStrategy, playerType: FloorIsLavaPlayer }); //REQUIRED
 	
 	maxScore = 3;
 	isReady = false;
 	drag = 1.075;
+	
 	
 	initialPositions =
 	{
@@ -12,6 +13,11 @@ class SumoGame extends Game
 		2:{ home:{x: 1/3, y:1/2}, away:{x: 2/3, y:1/2} },
 		3:{ home:{x: 3/7, y:2/3}, away:{x: 4/7, y:2/3} }
 	};
+	
+	holeRadiusMin = 25;
+	holeRadiusMax = 50;
+	holes = [];
+	holeColor = '#FFE066';
 	
 	constructor(params) 
 	{
@@ -48,6 +54,15 @@ class SumoGame extends Game
 		this.context.closePath();
 		this.context.stroke();
 		
+		for(let i=0;i<this.holes.length;i++)
+		{
+			this.context.beginPath();			
+			this.context.fillStyle = this.holeColor;
+			this.context.arc(this.canvas.width/2 + (this.holes[i].x * this.scale), this.canvas.height/2 + (this.holes[i].y * this.scale), this.holes[i].radius * this.scale, 0, 2 * Math.PI);
+			this.context.closePath();
+			this.context.fill();
+		}
+		
 		this.context.strokeStyle = this.strokeStyle;
 		
 		let fontSize = Math.round(30*this.scale);
@@ -61,6 +76,19 @@ class SumoGame extends Game
 		this.context.fillText(this.awayTeam.strategy.name.toLowerCase(), (this.fieldX+this.fieldWidth+ this.strokeWidth*2)*this.scale, (this.fieldY+this.fieldHeight/2)*this.scale);
 	};
 	
+	nextMove()
+	{
+		if(!this.isReady) { return; }
+		
+		let holeRadius = Math.floor(Math.random() * (this.holeRadiusMax - this.holeRadiusMin)) + this.holeRadiusMin;
+		let holeX = Math.floor(Math.random() * this.fieldRadius*2)-this.fieldRadius;
+		let holeY = Math.floor(Math.random() * this.fieldRadius*2)-this.fieldRadius;
+		this.holes.push({ x:holeX , y:holeY, radius:holeRadius});
+		this.redraw();
+		
+		super.nextMove();
+	}
+	
 	checkGameConditions()
 	{
 		if(!this.isReady) { return; }
@@ -72,6 +100,16 @@ class SumoGame extends Game
 			if (distance>this.fieldRadius*this.scale)
 			{
 				removeItem.push(this.players[i]);
+			}
+			for(let j=0;j<this.holes.length;j++)
+			{
+				let holeX = this.canvas.width/2 + this.holes[j].x*this.scale;
+				let holeY = this.canvas.height/2 + this.holes[j].y*this.scale;
+				if (this.lavaCollision(this.players[i].x*this.scale, this.players[i].y*this.scale, this.players[i].radius*this.scale, holeX, holeY, this.holes[j].radius*this.scale))
+				{
+					removeItem.push(this.players[i]);
+					break;
+				}
 			}
 		}
 		
@@ -91,5 +129,22 @@ class SumoGame extends Game
 			return;
 		}
 	};
+	
+	lavaCollision(p1x, p1y, r1, p2x, p2y, r2)
+	{
+	  var a;
+	  var x;
+	  var y;
+
+	  a = r1 + r2;
+	  x = p1x - p2x;
+	  y = p1y - p2y;
+
+	  if (a > Math.sqrt((x * x) + (y * y))) {
+		return true;
+	  } else {
+		return false;
+	  }
+	}
 }
 

@@ -11,7 +11,7 @@
 	
 	0 is directly in front, 180 is directly behind, 90 is directly above, -90 is directly below, 
 */
-class brando extends SoccerStrategy
+class pickEmOff extends FloorIsLavaStrategy
 {
 	static strategy = CodeCollision.Register(this); //REQUIRED
 	
@@ -21,26 +21,12 @@ class brando extends SoccerStrategy
 		id, //Represents the player on the field. Center player id is 0, the left and right wing players are -1 and 1;
 		position, // { x, y }
 		field, // { width, height }
-		teamMates, // [ {angle, distance, x, y} ]
-		otherTeam, // [ {angle, distance, x, y} ]
+		otherTeam, // [ {angle, distance, x, y},  {angle, distance, x, y},  {angle, distance, x, y} ]
 		ball, // {angle, distance, x, y}
 		ownGoal, //{ topPost{angle, distance, x, y},  bottomPost{angle, distance, x, y} }
 		otherGoal //{ topPost{angle, distance, x, y},  bottomPost{angle, distance, x, y} }
 	})
 	{
-		if (id==0)
-		{
-			return { angle: Math.abs(ball.angle)<45? ball.angle*1.1 : 180, power: 100 };
-		}
-		else if (id==-1)
-		{
-			return { angle: Math.abs(ball.angle)<25? ball.angle*1.1 : 180, power: 100 };
-		}
-		else if (id==1)
-		{
-			return { angle: Math.floor(Math.random() * 10)-5 + ball.angle, power: 100 };
-		}
-		
-		return { angle:0, power:100 };
+		return { angle:  otherTeam.length>0? otherTeam[0].angle : 0, power:100 };
 	};
 }

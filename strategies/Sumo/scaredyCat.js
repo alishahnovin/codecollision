@@ -20,11 +20,9 @@ class scaredySumo extends SumoStrategy
 	({
 		id, //Represents the player on the field. Center player id is 0, the left and right wing players are -1 and 1;
 		position, // { x, y }
-		field, // { width, height }
-		otherTeam, // [ {angle, distance, x, y},  {angle, distance, x, y},  {angle, distance, x, y} ]
-		ball, // {angle, distance, x, y}
-		ownGoal, //{ topPost{angle, distance, x, y},  bottomPost{angle, distance, x, y} }
-		otherGoal //{ topPost{angle, distance, x, y},  bottomPost{angle, distance, x, y} }
+		field, // { radius }
+		teamMates, // [ {angle, distance, x, y} ]
+		otherTeam, // [ [ {angle, distance, x, y} ] ]
 	})
 	{
 		return { angle:  Math.floor(Math.random() * 360), power:50 };

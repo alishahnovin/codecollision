@@ -11,7 +11,7 @@
 	
 	0 is directly in front, 180 is directly behind, 90 is directly above, -90 is directly below, 
 */
-class SumoStrategy extends Strategy
+class FloorIsLavaStrategy extends Strategy
 {
 	execute //Return Power (0-100), and Angle (0 is forward, 90 is up, -90 is down, 180 is backwards)
 	({
@@ -20,6 +20,7 @@ class SumoStrategy extends Strategy
 		field, // { radius }
 		teamMates, // [ {angle, distance, x, y} ]
 		otherTeam, // [ [ {angle, distance, x, y} ] ]
+		holes, // [ [ {angle, distance, x, y, radius } ] ]
 	})
 	{
 		return { angle:180, power: 10 };
