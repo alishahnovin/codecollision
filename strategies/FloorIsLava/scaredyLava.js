@@ -11,7 +11,7 @@
 	
 	0 is directly in front, 180 is directly behind, 90 is directly above, -90 is directly below, 
 */
-class pickEmOff extends FloorIsLavaStrategy
+class scaredyLava extends FloorIsLavaStrategy
 {
 	static strategy = CodeCollision.Register(this); //REQUIRED
 	
@@ -26,6 +26,6 @@ class pickEmOff extends FloorIsLavaStrategy
 		otherTeam, // [ {angle, distance, x, y} ]
 	})
 	{
-		return { angle:  otherTeam.length>0? otherTeam[0].angle : 0, power:100 };
+		return { angle:  Math.floor(Math.random() * 360), power:50 };
 	};
 }

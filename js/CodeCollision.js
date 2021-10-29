@@ -43,6 +43,20 @@ class CodeCollision
 		CodeCollision.InGameOptions.style.display = 'none';
 		document.body.appendChild(CodeCollision.InGameOptions);
 		
+		
+		let fullScreenBtn = document.createElement("button");
+		fullScreenBtn.innerHTML = '&#8689;';
+		fullScreenBtn.title = 'Toggle full-screen mode';
+		fullScreenBtn.onclick = function() { CodeCollision.ToggleFullScreen(true); };
+		CodeCollision.InGameOptions.appendChild(fullScreenBtn);
+		if (document.addEventListener)
+		{
+			document.addEventListener('fullscreenchange', function() { CodeCollision.ToggleFullScreen(CodeCollision.GetIsFullScreen());}, false);
+			document.addEventListener('mozfullscreenchange', function() { CodeCollision.ToggleFullScreen(CodeCollision.GetIsFullScreen()); }, false);
+			document.addEventListener('MSFullscreenChange', function() { CodeCollision.ToggleFullScreen(CodeCollision.GetIsFullScreen()); }, false);
+			document.addEventListener('webkitfullscreenchange', function() { CodeCollision.ToggleFullScreen(CodeCollision.GetIsFullScreen()); }, false);
+		}
+		
 		let skipBtn = document.createElement("button");
 		skipBtn.innerHTML = '&#187;';
 		skipBtn.title = 'Skip Match';
@@ -65,18 +79,7 @@ class CodeCollision
 		};
 		CodeCollision.InGameOptions.appendChild(stopBtn);
 		
-		let fullScreenBtn = document.createElement("button");
-		fullScreenBtn.innerHTML = '&#8689;';
-		fullScreenBtn.title = 'Toggle full-screen mode';
-		fullScreenBtn.onclick = function() { CodeCollision.ToggleFullScreen(true); };
-		CodeCollision.InGameOptions.appendChild(fullScreenBtn);
-		if (document.addEventListener)
-		{
-			document.addEventListener('fullscreenchange', function() { CodeCollision.ToggleFullScreen(CodeCollision.GetIsFullScreen());}, false);
-			document.addEventListener('mozfullscreenchange', function() { CodeCollision.ToggleFullScreen(CodeCollision.GetIsFullScreen()); }, false);
-			document.addEventListener('MSFullscreenChange', function() { CodeCollision.ToggleFullScreen(CodeCollision.GetIsFullScreen()); }, false);
-			document.addEventListener('webkitfullscreenchange', function() { CodeCollision.ToggleFullScreen(CodeCollision.GetIsFullScreen()); }, false);
-		}
+		
 		CodeCollision.PresentHeader();
 	}
 	
@@ -203,36 +206,59 @@ class CodeCollision
 		strategyFiles.addEventListener('change', CodeCollision.LoadStrategies, false);
 		CodeCollision.Container.appendChild(strategyFiles);
 		
-		var strategyActionBtn = document.createElement("button");
-		strategyActionBtn.innerHTML = "Load Strategies";
-		strategyActionBtn.onclick = function() { strategyFiles.click(); }
-		CodeCollision.Container.appendChild(strategyActionBtn);
+		var startBtn = document.createElement('button');
+		startBtn.innerText = "Start";
+		startBtn.className = "startBtn";
+		startBtn.onclick = function()
+		{
+			var strategies = [];
+			for(let i=0;i<CodeCollision.StrategySelectors.length;i++)
+			{
+				if (CodeCollision.StrategySelectors[i].checked)
+				{
+					strategies.push(CodeCollision.StrategySelectors[i].strategy);
+				}
+			}
+			if (strategies.length>0)
+			{
+				CodeCollision.StartGame(strategies.sort(()=>{ return Math.random() - 0.5; }));
+			}
+		};
 		
 		if (CodeCollision.Strategies.filter(x => x.prototype instanceof CodeCollision.GameType.baseStrategy).length>0)
 		{
-			var startBtn = document.createElement('button');
-			startBtn.innerText = "Start";
-			startBtn.className = "redBtn";
-			startBtn.onclick = function()
-			{
-				var strategies = [];
-				for(let i=0;i<CodeCollision.StrategySelectors.length;i++)
-				{
-					if (CodeCollision.StrategySelectors[i].checked)
-					{
-						strategies.push(CodeCollision.StrategySelectors[i].strategy);
-					}
-				}
-				if (strategies.length>0)
-				{
-					CodeCollision.StartGame(strategies.sort(()=>{ return Math.random() - 0.5; }));
-				}
-			};
-			CodeCollision.Container.appendChild(startBtn);
-					
 			var menuSelection = document.createElement('div');
 			menuSelection.className = 'menuSelection';
 			CodeCollision.Container.appendChild(menuSelection);
+			
+			let selectAllLabel = document.createElement("label");
+			selectAllLabel.className = "optionContainer";
+			
+			let selectAllSpan = document.createElement("div");
+			selectAllSpan.className = "label";
+			selectAllSpan.innerHTML = '<strong>Select All</strong>';
+			
+			let selectAll = document.createElement("input");
+			selectAll.type="checkbox";
+			selectAll.id='selectAll';
+			selectAll.checked = true;
+			selectAll.startBtn = startBtn;
+			
+			selectAllLabel.appendChild(selectAll);			
+			selectAllLabel.appendChild(selectAllSpan);
+			selectAllLabel.htmlFor = selectAll.id;
+			
+			menuSelection.appendChild(selectAllLabel);
+			selectAll.onchange = function(evt)
+			{
+				for(let i=0;i<CodeCollision.StrategySelectors.length;i++)
+				{
+					CodeCollision.StrategySelectors[i].checked = this.checked;
+				}
+				this.startBtn.disabled = !this.checked;
+			};
+			
+			menuSelection.appendChild(document.createElement('br'));
 			
 			for(let i=0;i<CodeCollision.Strategies.length;i++)
 			{
@@ -241,49 +267,56 @@ class CodeCollision
 					continue;
 				}
 				
-				var optionContainer = document.createElement('div');
-				optionContainer.className = "optionContainer";
+				let label = document.createElement("label");
+				label.className = "optionContainer";
+				
+				let span = document.createElement("div");
+				span.className = "label";
+				span.innerHTML = CodeCollision.Strategies[i].name;
 				
 				let input = document.createElement("input");
 				input.id = CodeCollision.Strategies[i].name;
 				input.value = CodeCollision.Strategies[i].name;
+				input.startBtn = startBtn;
+				input.selectAll = selectAll;
 				input.type = "checkbox";
 				input.checked = true;
 				input.strategy = CodeCollision.Strategies[i];
 				CodeCollision.StrategySelectors.push(input);
-				optionContainer.appendChild(input);			
-				optionContainer.appendChild(document.createElement("br"));
-				let label = document.createElement("label");
-				label.htmlFor = input.id;
-				label.innerHTML = CodeCollision.Strategies[i].name;
-				optionContainer.appendChild(label);
+				input.onchange = function(evt)
+				{
+					let allChecked = true;
+					let isOneChecked = false;
+					for(let j=0;j<CodeCollision.StrategySelectors.length;j++)
+					{
+						if(CodeCollision.StrategySelectors[j].checked)
+						{
+							isOneChecked = true;
+						} else {
+							allChecked = false;
+						}
+					}
+					this.startBtn.disabled = !isOneChecked;
+					this.selectAll.checked = allChecked;
+				};
 				
-				menuSelection.appendChild(optionContainer);
+				label.appendChild(input);			
+				label.appendChild(span);
+				label.htmlFor = input.id;
+				
+				menuSelection.appendChild(label);
 			}
-			
-			var seletionBtnContainer = document.createElement('div');
-			var selectAll = document.createElement('button');
-			selectAll.innerText = "Select All";
-			selectAll.onclick = function()
-			{
-				for(let i=0;i<CodeCollision.StrategySelectors.length;i++)
-				{
-					CodeCollision.StrategySelectors[i].checked = true;
-				}
-			};
-			seletionBtnContainer.appendChild(selectAll);
-			
-			var selectNone = document.createElement('button');
-			selectNone.innerText = "Select None";
-			selectNone.onclick = function()
-			{
-				for(let i=0;i<CodeCollision.StrategySelectors.length;i++)
-				{
-					CodeCollision.StrategySelectors[i].checked = false;
-				}
-			};
-			seletionBtnContainer.appendChild(selectNone);
-			CodeCollision.Container.appendChild(seletionBtnContainer);
+		}
+		
+		var strategyActionBtn = document.createElement("button");
+		strategyActionBtn.innerHTML = "Load Strategies";
+		strategyActionBtn.className = "loadBtn";
+		strategyActionBtn.onclick = function() { strategyFiles.click(); }
+		CodeCollision.Container.appendChild(strategyActionBtn);
+	
+		if (CodeCollision.StrategySelectors.length>0)
+		{
+			CodeCollision.Container.appendChild(startBtn);
 		}
 	}
 	

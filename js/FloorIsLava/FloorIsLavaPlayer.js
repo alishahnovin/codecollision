@@ -36,11 +36,20 @@ class FloorIsLavaPlayer extends GameObject
 			}
 		}
 		
+		var holes = [];// [ {angle, distance, x, y, radius} ]
+		for(let i=0;i<this.game.holes;i++)
+		{
+			let holeX = this.game.canvas.width/2 + this.holes[i].x;
+			let holeY = this.game.canvas.height/2 + this.holes[i].y;
+			holes.push(this.getVectorToPoint({ x:holeX, y:holeY }));
+		}
+		
 		var strategy = new this.strategy();
 		var strategyResult = strategy.execute({
 			id:this.id,
 			position: { x: this.isMirrored? this.game.fieldWidth-(this.x-this.game.fieldX) : this.x-this.game.fieldX, y:this.y-this.game.fieldY },
-			field: { radius:this.game.fieldRadius }, //zero origin everything
+			field: { radius:this.game.fieldRadius }, //zero origin everything,
+			holes: holes,
 			teamMates: teamMates,
 			otherTeam: otherTeam,
 		});

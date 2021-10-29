@@ -37,7 +37,7 @@ class SumoGame extends Game
 		const isFullScreen = CodeCollision.GetIsFullScreen();
 		this.canvas.style.borderWidth = isFullScreen? '0px' : '25px';
 		
-		this.context.strokeStyle = '#C3E5DF';
+		this.context.strokeStyle = this.fieldLines;
 		this.context.lineCap = 'round';
 		this.context.lineWidth = Math.min(this.strokeWidth*this.scale);
 		

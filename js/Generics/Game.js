@@ -1,8 +1,8 @@
 class Game 
 {
 	strokeStyle = "#50514F";
-	fieldLines = "#C3E5DF";
-	strokeWidth = 6;
+	fieldLines = "#50514F";
+	strokeWidth = 5;
 	winner = false;
 	
 	drag = 1.025;
@@ -90,7 +90,7 @@ class Game
 				this.context.fillStyle = this.objects[i].color;
 				this.context.closePath();
 				this.context.fill();
-				this.context.stroke();
+				//this.context.stroke();
 			}
 		}
 	};

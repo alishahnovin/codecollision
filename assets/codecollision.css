@@ -6,14 +6,14 @@ body
 }
 .menuSelection
 {
-	border: 2px solid #247BA0;
+	border: 2px solid #50514F;
 	border-radius:10px;
 	padding:15px;
 	max-height:200px;
-	background-color:#F0F0F0;
+	background-color:#FFFFFF;
 	overflow-y:auto;
-	max-width:450px;
-	margin:15px;
+	max-width:470px;
+	margin:10px 0px;
 }
 
 .menuSelection::-webkit-scrollbar {
@@ -31,9 +31,28 @@ body
 }
 select, select:focus, select:active
 {
-	font-family: 'Didact Gothic', sans-serif;text-transform:lowercase;font-size:2em;margin:0.5em;font-weight:normal; border:0px; display:block; color:#50514F;outline: none; width:400px;text-align:center;
+	font-family: 'Didact Gothic', sans-serif;text-transform:lowercase;font-size:2em;margin:10px 0px;font-weight:normal; border-radius:10px;border:2px solid #50514F; display:block; color:#50514F;outline: none; width:500px;text-align:center;
 }
-.optionContainer { display:inline-block;width:100px;background-color:#E0E0E0;margin:5px;text-align:center;padding:5px;font-size:1em;border-radius:10px;text-transform:lowercase; }
+option { margin:0px; }
+
+.optionContainer { cursor:pointer; }
+.optionContainer input { height:0px;width:0px;opacity:0;position:absolute; }
+
+.optionContainer .label
+{
+	display:inline-block;width:100px;margin:5px;text-align:center;padding:5px;font-size:1em;border-radius:10px;text-transform:lowercase; border:2px solid #50514F; color: #50514F; background-color:#FFFFFF;
+	  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; 
+}
+
+.optionContainer input:checked + .label {
+  border:2px solid #247BA0;
+color:#247BA0;
+}
 
 .gameContainer, .fullScreenGameContainer
 {
@@ -49,7 +68,7 @@ select, select:focus, select:active
 .fullScreenGameContainer
 {
 	width:100%;
-	background-color:#70C1B3;
+	background-color:#FFFFFF;
 }
 .gameContainer img, .fullScreenGameContainer img { display:block; }
 .gameContainer h1, .fullScreenGameContainer h1
@@ -63,8 +82,8 @@ select, select:focus, select:active
 	background-repeat:no-repeat;
 	background-position:center;
 	background-size:40%;
-	background-color:#70C1B3;
-	border: 0px solid #50514F;
+	background-color:#FFFFFF;
+	border: 0px solid #FFFFFF;
 }
 .home { color: #F25F5C; }
 .away { color: #247BA0; }
@@ -73,7 +92,6 @@ select, select:focus, select:active
 	border:2px solid #FFE066;
 	color: #50514F;
 	padding:15px;
-	background-color:#F0F0F0;
 	border-radius:10px;
 	position:absolute;
 	top:25px;
@@ -88,16 +106,18 @@ button
 {
 	border:2px solid #247BA0;
 	color:#247BA0;
-	border-radius:10px;
-	font-size:1em;
+	border-radius:10px;font-size:1.7em;
+	font-family: 'Didact Gothic', sans-serif;
 	text-transform:lowercase;
 	padding:1em 1em;
-	min-width:200px;
-	margin:5px;
+	min-width:245px;
 	background-color:#FFFFFF;
+	cursor:pointer;
 }
-.redBtn { border:2px solid #F25F5C; color: #F25F5C; }
-
+.loadBtn { border:2px solid #247BA0; color: #247BA0; margin-right:5px; }
+.startBtn { border:2px solid #F25F5C; color: #F25F5C; margin-left:5px; }
+.startBtn:disabled { border:2px solid #50514F;color: #50514F;cursor:default; }
+.selectBtnContainer {  }
 .ingameOptions
 {
 	position:absolute;
@@ -107,10 +127,13 @@ button
 .ingameOptions button
 {
 	border:2px solid #50514F;
+	color: #50514F;
+	background-color:#F0F0F0;
+	font-size:1em;
 	font-weight:bold;
+	padding:0px;
 	width:50px;
 	height:50px;
+	margin-left:10px;
 	min-width:auto;
-	color:#50514F;
-	background-color:#CCCCCC;
 }

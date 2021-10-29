@@ -27,7 +27,7 @@ class SoccerGame extends Game
 			this.awayTeam.addPlayer(key, this.width * this.initialPositions[key].away.x, this.height * this.initialPositions[key].away.y);
 		}
 		
-		this.ball = new SoccerBall({ game: this, x: this.width/2, y: this.height/2, color: "#FFE066" });
+		this.ball = new SoccerBall({ game: this, x: this.width/2, y: this.height/2, color: "#FDCA00" });
 		this.objects.push(this.ball);
 		
 		this.isReady = true;
@@ -87,18 +87,18 @@ class SoccerGame extends Game
 		}
 		
 		this.context.beginPath();
-		this.context.rect((this.homeTeam.net.topPost.x- this.homeTeam.net.width) * this.scale + this.context.lineWidth/2, this.homeTeam.net.topPost.y* this.scale,this.homeTeam.net.width*this.scale, this.homeTeam.net.height*this.scale);
+		this.context.rect(Math.ceil((this.homeTeam.net.topPost.x- this.homeTeam.net.width) * this.scale + this.context.lineWidth), this.homeTeam.net.topPost.y* this.scale,this.homeTeam.net.width*this.scale, this.homeTeam.net.height*this.scale);
 		this.context.fillStyle = this.homeTeam.color;
 		this.context.closePath();
 		this.context.fill();
-		this.context.stroke();
+		//this.context.stroke();
 		
 		this.context.beginPath();
-		this.context.rect(this.awayTeam.net.topPost.x * this.scale - this.context.lineWidth/2, this.awayTeam.net.topPost.y* this.scale,this.homeTeam.net.width*this.scale, this.homeTeam.net.height*this.scale);
+		this.context.rect(Math.floor(this.awayTeam.net.topPost.x * this.scale - this.context.lineWidth), this.awayTeam.net.topPost.y* this.scale,this.homeTeam.net.width*this.scale, this.homeTeam.net.height*this.scale);
 		this.context.fillStyle = this.awayTeam.color;
 		this.context.closePath();
 		this.context.fill();
-		this.context.stroke();
+		//this.context.stroke();
 	};
 	
 	checkGameConditions()

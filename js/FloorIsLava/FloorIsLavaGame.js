@@ -17,7 +17,7 @@ class FloorIsLavaGame extends Game
 	holeRadiusMin = 25;
 	holeRadiusMax = 50;
 	holes = [];
-	holeColor = '#FFE066';
+	holeColor = '#FDCA00';
 	
 	constructor(params) 
 	{
@@ -43,7 +43,7 @@ class FloorIsLavaGame extends Game
 		const isFullScreen = CodeCollision.GetIsFullScreen();
 		this.canvas.style.borderWidth = isFullScreen? '0px' : '25px';
 		
-		this.context.strokeStyle = '#C3E5DF';
+		this.context.strokeStyle = this.fieldLines;
 		this.context.lineCap = 'round';
 		this.context.lineWidth = Math.min(this.strokeWidth*this.scale);
 		
@@ -54,15 +54,27 @@ class FloorIsLavaGame extends Game
 		this.context.closePath();
 		this.context.stroke();
 		
+		
+		this.context.save();
+		this.context.beginPath();
 		for(let i=0;i<this.holes.length;i++)
 		{
-			this.context.beginPath();			
-			this.context.fillStyle = this.holeColor;
-			this.context.arc(this.canvas.width/2 + (this.holes[i].x * this.scale), this.canvas.height/2 + (this.holes[i].y * this.scale), this.holes[i].radius * this.scale, 0, 2 * Math.PI);
-			this.context.closePath();
-			this.context.fill();
+			let centerX = this.canvas.width/2 + (this.holes[i].x * this.scale);
+			let centerY = this.canvas.height/2 + (this.holes[i].y * this.scale);
+			this.context.moveTo(centerX, centerY);
+			this.context.arc(centerX, centerY, this.holes[i].radius * this.scale, 0, 2 * Math.PI);
 		}
-		
+		this.context.strokeStyle = this.fieldLines;
+		this.context.lineCap = 'round';
+		this.context.lineWidth = Math.min(this.strokeWidth*this.scale);
+		this.context.stroke();
+		this.context.globalCompositeOperation = "destination-out";
+		this.context.fillStyle = this.holeColor;
+		this.context.fill();
+		this.context.restore();
+		this.context.fillStyle = this.holeColor;
+		this.context.fill();
+			
 		this.context.strokeStyle = this.strokeStyle;
 		
 		let fontSize = Math.round(30*this.scale);
@@ -84,6 +96,7 @@ class FloorIsLavaGame extends Game
 		let holeX = Math.floor(Math.random() * this.fieldRadius*2)-this.fieldRadius;
 		let holeY = Math.floor(Math.random() * this.fieldRadius*2)-this.fieldRadius;
 		this.holes.push({ x:holeX , y:holeY, radius:holeRadius});
+		
 		this.redraw();
 		
 		super.nextMove();
