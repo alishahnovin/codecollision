@@ -214,7 +214,7 @@ class Editor
 		this.defaultStrategy.label = this.defaultName;
 		this.enabled = true;
 		this.Container.style.display = 'block';
-		
+		this.refreshStrategySelection();
 		var code = (new this.defaultStrategy()).execute.toString();
 		this.editor.setValue(code, -1);
 		this.output('Ready');

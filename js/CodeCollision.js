@@ -123,6 +123,13 @@ class CodeCollision
 	{
 		if (type.prototype instanceof CodeCollision.GameType.baseStrategy)
 		{
+			for(let i=0;i<CodeCollision.Strategies.length;i++)
+			{
+				if (CodeCollision.Strategies[i] == type || type.name.toLowerCase() == CodeCollision.Strategies[i].label.toLowerCase())
+				{
+					return;
+				}
+			}
 			type.label = type.name;
 			CodeCollision.Strategies.push(type);
 		}
