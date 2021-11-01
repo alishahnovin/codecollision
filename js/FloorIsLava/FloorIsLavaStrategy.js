@@ -15,7 +15,7 @@ class FloorIsLavaStrategy extends Strategy
 {
 	execute //Return Power (0-100), and Angle (0 is forward, 90 is up, -90 is down, 180 is backwards)
 	({
-		id, //Represents the player on the field. Center player id is 0, the left and right wing players are -1 and 1;
+		id, //Represents the player on the field (1,2,3)
 		position, // { x, y }
 		field, // { radius }
 		teamMates, // [ {angle, distance, x, y} ]

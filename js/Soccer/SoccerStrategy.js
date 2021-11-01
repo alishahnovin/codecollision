@@ -15,7 +15,7 @@ class SoccerStrategy extends Strategy
 {
 	execute //Return Power (0-100), and Angle (0 is forward, 90 is up, -90 is down, 180 is backwards)
 	({
-		id, //Represents the player on the field. Center player id is 0, the left and right wing players are -1 and 1;
+		id, //Represents the player on the field (-1, 0, 1)
 		position, // { x, y }
 		field, // { width, height }
 		teamMates, // [ {angle, distance, x, y} ]
@@ -25,6 +25,6 @@ class SoccerStrategy extends Strategy
 		otherGoal //{ topPost{angle, distance, x, y},  bottomPost{angle, distance, x, y} }
 	})
 	{
-		return { angle:180, power: 10 };
+		return { angle:0, power: 10 };
 	};
 };

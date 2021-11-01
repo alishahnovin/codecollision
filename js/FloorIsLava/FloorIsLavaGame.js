@@ -81,11 +81,11 @@ class FloorIsLavaGame extends Game
 		this.context.font = fontSize+"px Didact Gothic";
 		this.context.textAlign = 'right';
 		this.context.fillStyle = this.homeTeam.color;
-		this.context.fillText(this.homeTeam.strategy.name.toLowerCase(), (this.fieldX - this.strokeWidth*2)*this.scale, (this.fieldY+this.fieldHeight/2)*this.scale);
+		this.context.fillText(this.homeTeam.strategy.label.toLowerCase(), (this.fieldX - this.strokeWidth*2)*this.scale, (this.fieldY+this.fieldHeight/2)*this.scale);
 		
 		this.context.fillStyle = this.awayTeam.color;
 		this.context.textAlign = 'left';
-		this.context.fillText(this.awayTeam.strategy.name.toLowerCase(), (this.fieldX+this.fieldWidth+ this.strokeWidth*2)*this.scale, (this.fieldY+this.fieldHeight/2)*this.scale);
+		this.context.fillText(this.awayTeam.strategy.label.toLowerCase(), (this.fieldX+this.fieldWidth+ this.strokeWidth*2)*this.scale, (this.fieldY+this.fieldHeight/2)*this.scale);
 	};
 	
 	nextMove()

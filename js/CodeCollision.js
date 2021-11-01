@@ -10,6 +10,12 @@ class CodeCollision
 	static StrategySelectors = []; //the inputs, used to verify that the strategy has been selected or not...also used for 'select all/none';
 	static CompetingStrategies = []; //these are the strategies that are selected to go head to head for a competition
 	static Strategies = []; //these are all the registered stratetgie, not part of the game...
+	static StrategyLoader = false;
+	static Editor = false;
+	
+	//tod: this whole class has gotten really large, too many responsibilities - need to break it up
+	
+	//bug: when close editor and then stop game... error on hometeam.strategy.name 
 	
 	static GameTypes =
 	{
@@ -63,7 +69,7 @@ class CodeCollision
 		skipBtn.onclick = function() {
 			if (confirm("Skip this match?"))
 			{
-				CodeCollision.SkipMatch(CodeCollision.Game.homeTeam.score!=CodeCollision.Game.awayTeam.score && confirm("Award game to " + (CodeCollision.Game.homeTeam.score>CodeCollision.Game.awayTeam.score ? CodeCollision.Game.homeTeam.strategy.name :  CodeCollision.Game.awayTeam.strategy.name) + "?"));
+				CodeCollision.SkipMatch(CodeCollision.Game.homeTeam.score!=CodeCollision.Game.awayTeam.score && confirm("Award game to " + (CodeCollision.Game.homeTeam.score>CodeCollision.Game.awayTeam.score ? CodeCollision.Game.homeTeam.strategy.label :  CodeCollision.Game.awayTeam.strategy.label) + "?"));
 			}
 		};
 		CodeCollision.InGameOptions.appendChild(skipBtn);
@@ -79,7 +85,16 @@ class CodeCollision
 		};
 		CodeCollision.InGameOptions.appendChild(stopBtn);
 		
+		CodeCollision.StrategyLoader = document.createElement("input");
+		CodeCollision.StrategyLoader.type = "file";
+		CodeCollision.StrategyLoader.multiple = true;
+		CodeCollision.StrategyLoader.id = "strategyFiles";
+		CodeCollision.StrategyLoader.accept = ".js";
+		CodeCollision.StrategyLoader.style.display = "none";
+		CodeCollision.StrategyLoader.addEventListener('change', CodeCollision.LoadStrategies, false);
+		CodeCollision.Container.appendChild(CodeCollision.StrategyLoader);
 		
+		CodeCollision.Editor = new Editor();
 		CodeCollision.PresentHeader();
 	}
 	
@@ -108,7 +123,16 @@ class CodeCollision
 	{
 		if (type.prototype instanceof CodeCollision.GameType.baseStrategy)
 		{
+			type.label = type.name;
 			CodeCollision.Strategies.push(type);
+		}
+	}
+	
+	static Unregister(type)
+	{
+		const index = CodeCollision.Strategies.indexOf(type);
+		if (index > -1) {
+		  CodeCollision.Strategies.splice(index, 1);
 		}
 	}
 	
@@ -141,7 +165,13 @@ class CodeCollision
 			if (filesLoaded>0 && filesLoaded==filesToLoad && CodeCollision.Strategies.length>0)
 			{
 				clearInterval(loadStrategyTimer);
-				CodeCollision.PresentGameOptions();
+				
+				if (CodeCollision.Editor.enabled)
+				{
+					CodeCollision.Editor.refreshStrategySelection();
+				} else {
+					CodeCollision.PresentGameOptions();
+				}
 			}
 		}, 100);
 	}
@@ -195,16 +225,8 @@ class CodeCollision
 		document.title = ("code / collision: " + CodeCollision.GameType.label).toLowerCase();
 		CodeCollision.PresentHeader();
 		
-		CodeCollision.InGameOptions.style.display = 'none';
+		CodeCollision.ShowInGameOptions(false);
 		CodeCollision.StrategySelectors = [];
-		var strategyFiles = document.createElement("input");
-		strategyFiles.type = "file";
-		strategyFiles.multiple = true;
-		strategyFiles.id = "strategyFiles";
-		strategyFiles.accept = ".js";
-		strategyFiles.style.display = "none";
-		strategyFiles.addEventListener('change', CodeCollision.LoadStrategies, false);
-		CodeCollision.Container.appendChild(strategyFiles);
 		
 		var startBtn = document.createElement('button');
 		startBtn.innerText = "Start";
@@ -272,11 +294,11 @@ class CodeCollision
 				
 				let span = document.createElement("div");
 				span.className = "label";
-				span.innerHTML = CodeCollision.Strategies[i].name;
+				span.innerHTML = CodeCollision.Strategies[i].label;
 				
 				let input = document.createElement("input");
-				input.id = CodeCollision.Strategies[i].name;
-				input.value = CodeCollision.Strategies[i].name;
+				input.id = CodeCollision.Strategies[i].label;
+				input.value = CodeCollision.Strategies[i].label;
 				input.startBtn = startBtn;
 				input.selectAll = selectAll;
 				input.type = "checkbox";
@@ -308,15 +330,38 @@ class CodeCollision
 			}
 		}
 		
-		var strategyActionBtn = document.createElement("button");
-		strategyActionBtn.innerHTML = "Load Strategies";
-		strategyActionBtn.className = "loadBtn";
-		strategyActionBtn.onclick = function() { strategyFiles.click(); }
-		CodeCollision.Container.appendChild(strategyActionBtn);
+		var editStrategiesBtn = document.createElement("button");
+		editStrategiesBtn.innerHTML = "Edit";
+		editStrategiesBtn.className = "loadBtn";
+		editStrategiesBtn.onclick = function() { CodeCollision.ToggleEditMode(true); };
+		CodeCollision.Container.appendChild(editStrategiesBtn);
+		
+		var loadStrategiesBtn = document.createElement("button");
+		loadStrategiesBtn.innerHTML = "Load";
+		loadStrategiesBtn.className = "loadBtn";
+		loadStrategiesBtn.onclick = function() { CodeCollision.BrowseLocalFiles(); }
+		CodeCollision.Container.appendChild(loadStrategiesBtn);
 	
 		if (CodeCollision.StrategySelectors.length>0)
 		{
 			CodeCollision.Container.appendChild(startBtn);
+		}
+	}
+	
+	static BrowseLocalFiles()
+	{
+		CodeCollision.StrategyLoader.click();
+	}
+	
+	static ToggleEditMode(enable)
+	{
+		if (enable)
+		{
+			CodeCollision.Container.classList.add('gameContainerEditMode');
+			CodeCollision.Editor.show();
+		} else {
+			CodeCollision.Container.classList.remove('gameContainerEditMode');
+			CodeCollision.Editor.hide();
 		}
 	}
 	
@@ -325,7 +370,7 @@ class CodeCollision
 		CodeCollision.CompetingStrategies = {};
 		for(let i=0;i<strategies.length;i++)
 		{
-			CodeCollision.CompetingStrategies[strategies[i].name] = { name:strategies[i].name, hasCompeted: false, wins: 0 };
+			CodeCollision.CompetingStrategies[strategies[i].label] = { label:strategies[i].label, hasCompeted: false, wins: 0 };
 		}
 		CodeCollision.CurrentRound = -1;
 		CodeCollision.Rounds = CodeCollision.RoundRobin(strategies);
@@ -356,15 +401,15 @@ class CodeCollision
 		{
 			return;
 		}
-		CodeCollision.Container.className = "gameContainer";
-		CodeCollision.InGameOptions.style.display = 'none';
+		CodeCollision.Container.classList.remove('fullScreenGameContainer');
+		CodeCollision.ShowInGameOptions(false);
 		CodeCollision.PresentLeaderBoard();
 		CodeCollision.CurrentRound++;
 		let team1 = CodeCollision.Rounds[CodeCollision.CurrentRound].a;
 		let team2 = CodeCollision.Rounds[CodeCollision.CurrentRound].b;
 		
-		CodeCollision.CompetingStrategies[team1.name].hasCompeted = true;
-		CodeCollision.CompetingStrategies[team2.name].hasCompeted = true;
+		CodeCollision.CompetingStrategies[team1.label].hasCompeted = true;
+		CodeCollision.CompetingStrategies[team2.label].hasCompeted = true;
 		
 		CodeCollision.Container.innerHTML = '';
 		if(CodeCollision.Rounds.length>1)
@@ -375,10 +420,10 @@ class CodeCollision
 		}
 		
 		var h1 = document.createElement('h1');
-		h1.innerHTML = '<span class="home">'+team1.name+'</span> vs. <span class="away">'+team2.name+'</span>';
+		h1.innerHTML = '<span class="home">'+team1.label+'</span> vs. <span class="away">'+team2.label+'</span>';
 		CodeCollision.Container.appendChild(h1);
 		
-		document.title = ("code / collision: " + CodeCollision.GameType.label + " - " + team1.name + " vs. " + team2.name).toLowerCase();
+		document.title = ("code / collision: " + CodeCollision.GameType.label + " - " + team1.label + " vs. " + team2.label).toLowerCase();
 		
 		setTimeout(function() { CodeCollision.StartMatch(team1, team2); }, 3000);
 	}
@@ -413,7 +458,7 @@ class CodeCollision
 		{
 			if (CodeCollision.CompetingStrategies[strategy].hasCompeted)
 			{
-				leaders.push({ name: CodeCollision.CompetingStrategies[strategy].name, wins:CodeCollision.CompetingStrategies[strategy].wins });
+				leaders.push({ label: CodeCollision.CompetingStrategies[strategy].label, wins:CodeCollision.CompetingStrategies[strategy].wins });
 			}
 		}
 		
@@ -431,14 +476,14 @@ class CodeCollision
 			const oi=i;
 			var code = '<tr><td>'+(i+1)+'</td>';
 			code += '<td>';
-			code += leaders[i].name;
+			code += leaders[i].label;
 			for(let j=i+1;j<leaders.length;j++)
 			{
 				if (leaders[j].wins!=leaders[i].wins)
 				{
 					break;
 				}
-				code += ", "+leaders[j].name;
+				code += ", "+leaders[j].label;
 				i++;
 			}
 			code += '</td>';
@@ -450,18 +495,24 @@ class CodeCollision
 	
 	static FinishMatch()
 	{
+		if (CodeCollision.Editor.enabled)
+		{
+			CodeCollision.StartMatch(CodeCollision.Editor.testStrategy, CodeCollision.Editor.testStrategy);
+			return;
+		}
+		
 		document.title = ("code / collision: " + CodeCollision.GameType.label).toLowerCase();
 		
-		CodeCollision.InGameOptions.style.display = 'none';
+		CodeCollision.ShowInGameOptions(false);
 		CodeCollision.Container.className = "gameContainer";
 		CodeCollision.Container.innerHTML = '';
-		var h1 = document.createElement('h1');
+		var h1 = document.createElement('h1');49
 		let h1Class = CodeCollision.Game.winner && CodeCollision.Game.winner == CodeCollision.Game.homeTeam.strategy? 'home' : 'away';
-		h1.innerHTML = CodeCollision.Game.winner? '<span class="'+h1Class+'">'+CodeCollision.Game.winner.name + '</span> wins!' : 'Game ended in draw';
+		h1.innerHTML = CodeCollision.Game.winner? '<span class="'+h1Class+'">'+CodeCollision.Game.winner.label + '</span> wins!' : 'Game ended in draw';
 		CodeCollision.Game.stop();
 		if (CodeCollision.Game.winner)
 		{
-			CodeCollision.CompetingStrategies[CodeCollision.Game.winner.name].wins++;
+			CodeCollision.CompetingStrategies[CodeCollision.Game.winner.label].wins++;
 		}
 		CodeCollision.Container.appendChild(h1);
 		
@@ -507,20 +558,41 @@ class CodeCollision
 				document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
 			}
 		}
-		CodeCollision.Container.className = toggle? "fullScreenGameContainer" : "gameContainer";
-		CodeCollision.InGameOptions.style.display = toggle? 'none' : 'block';
+		if (toggle)
+		{
+			CodeCollision.Container.classList.add('fullScreenGameContainer');
+		} else {
+			CodeCollision.Container.classList.remove('fullScreenGameContainer');
+		}
+		CodeCollision.ShowInGameOptions(!toggle);
+	}
+	
+	static ShowInGameOptions(toggle)
+	{
+		CodeCollision.InGameOptions.style.display = toggle? 'block' : 'none';
 	}
 	
 	static StartMatch(team1, team2)
 	{
+		if (CodeCollision.Game)
+		{
+			CodeCollision.Game.stop();
+		}
+		
 		CodeCollision.Container.innerHTML = '';
 		CodeCollision.HideLeaderBoard();
-		CodeCollision.InGameOptions.style.display = CodeCollision.GetIsFullScreen()? 'none' : 'block';
-		CodeCollision.Container.className = CodeCollision.GetIsFullScreen()? "fullScreenGameContainer" : "gameContainer";
+		const fullScreen = CodeCollision.GetIsFullScreen();
+		CodeCollision.ShowInGameOptions(!fullScreen && !CodeCollision.Editor.enabled);
+		if (fullScreen)
+		{
+			CodeCollision.Container.classList.add('fullScreenGameContainer');
+		} else {
+			CodeCollision.Container.classList.remove('fullScreenGameContainer');
+		}
 		
 		CodeCollision.Game = new CodeCollision.GameType.gameType({ homeStrategy:team1, awayStrategy:team2, playerType:CodeCollision.GameType.playerType, teamType: CodeCollision.GameType.teamType });
 		CodeCollision.Container.appendChild(CodeCollision.Game.canvas);
 		
-		setTimeout(function() { CodeCollision.Game.start(); }, 1000);
+		setTimeout(function() { CodeCollision.Game.start(); }, CodeCollision.Editor.enabled? 1 : 1000);
 	}
 }

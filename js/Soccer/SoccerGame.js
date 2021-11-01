@@ -65,11 +65,11 @@ class SoccerGame extends Game
 		let fontSize = Math.round(30*this.scale);
 		this.context.font = fontSize+"px Didact Gothic";
 		this.context.fillStyle = this.homeTeam.color;
-		this.context.fillText(this.homeTeam.strategy.name.toLowerCase(), x1, y1 - scoreMarkerMarginY);
+		this.context.fillText(this.homeTeam.strategy.label.toLowerCase(), x1, y1 - scoreMarkerMarginY);
 		
 		this.context.fillStyle = this.awayTeam.color;
 		this.context.textAlign = 'right';
-		this.context.fillText(this.awayTeam.strategy.name.toLowerCase(), x2, y1 - scoreMarkerMarginY);
+		this.context.fillText(this.awayTeam.strategy.label.toLowerCase(), x2, y1 - scoreMarkerMarginY);
 		
 		for(let i=0;i<this.maxScore;i++)
 		{

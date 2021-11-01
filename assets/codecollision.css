@@ -31,7 +31,10 @@ body
 }
 select, select:focus, select:active
 {
-	font-family: 'Didact Gothic', sans-serif;text-transform:lowercase;font-size:2em;margin:10px 0px;font-weight:normal; border-radius:10px;border:2px solid #50514F; display:block; color:#50514F;outline: none; width:500px;text-align:center;
+	font-family: 'Didact Gothic', sans-serif;
+	text-transform:lowercase;font-size:2em;margin:10px 0px;font-weight:normal;
+	border-radius:10px;border:2px solid #50514F; display:block; color:#50514F;
+	outline: none; width:500px;text-align:center;
 }
 option { margin:0px; }
 
@@ -54,7 +57,7 @@ option { margin:0px; }
 color:#247BA0;
 }
 
-.gameContainer, .fullScreenGameContainer
+.gameContainer
 {
 	transform: translate(-50%, -50%);
 	position:absolute;  
@@ -64,6 +67,17 @@ color:#247BA0;
 	color: #50514F;
 	width:auto;
 	background-color:transparent;
+	-webkit-touch-callout: none; /* iOS Safari */
+	-webkit-user-select: none; /* Safari */
+	-khtml-user-select: none; /* Konqueror HTML */
+	-moz-user-select: none; /* Old versions of Firefox */
+	-ms-user-select: none; /* Internet Explorer/Edge */
+	user-select: none; 
+}
+.gameContainerEditMode 
+{
+	top:0px;
+	transform: translate(-50%, 0%);
 }
 .fullScreenGameContainer
 {
@@ -137,3 +151,96 @@ button
 	margin-left:10px;
 	min-width:auto;
 }
+.editorContainer
+{
+	position:absolute;
+	height:200px;
+	width:100%;
+	bottom:0px;
+	left:0px;
+	display:none;
+}
+.editorContainer input, .editorContainer button
+{
+	font:12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+	outline:none;
+	border:none;
+	margin:0px;
+	width:200px;
+	padding:0px 5px;
+	height:20px;
+	margin:0px 10px;
+}
+.editorContainer .resizer
+{
+	background-color:#50514F;
+	position: absolute;
+	top:-25px;
+	left:0px;
+	width:100%;
+	height:5px;
+	cursor:row-resize;
+}
+#editor { 
+	text-transform:none;
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	bottom: 0px;
+	left: 0px;
+	width:50%;
+	height:100%;
+	border-top:2px solid #50514F;
+	border-right:2px solid #50514F;
+}
+.editorToolbar
+{
+	position: absolute;
+	width:100%;
+	top:-20px;
+	left:0px;
+	background-color:#CCCCCC;
+	overflow:hidden;
+}
+.console
+{ 
+	text-transform:none;
+	position: absolute;
+	top:0px;
+	right: 0px;
+	width:50%;
+	background-color:#F0F0F0;
+	height:100%;
+	border:none;
+	border-left:2px solid #50514F;
+	border-top:2px solid #50514F;
+	font:12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+	outline:none;
+}
+.editorToolbar button, .editorToolbar select {
+	width:auto;
+	margin:0px 10px;
+	min-width:100px;
+	border:none;
+	border-radius:0px;
+	padding:0px;
+	font-size:10pt;
+}
+.editorToolbar select
+{
+	display:inline-block;
+	text-align:left;
+}
+.testBtn
+{
+	color:#70C1B3;
+}
+.saveBtn
+{
+	color:#247BA0;
+}
+.closeBtn
+{
+	color:#F25F5C;
+}
+.bold { font-weight:bold; }

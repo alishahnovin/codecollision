@@ -100,7 +100,7 @@ class Game
 		if (vx==0 && vy==0) { return; }
 		this.context.save();
 		this.context.lineCap = 'round';
-		this.context.strokeStyle = this.strokeStyle;
+		this.context.strokeStyle = color?? this.strokeStyle;
 		this.context.lineWidth = Math.min(this.strokeWidth*this.scale);
 		this.context.beginPath();
 		let x2 = (x + vx * amplify);

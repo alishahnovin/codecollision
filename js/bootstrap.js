@@ -34,13 +34,15 @@ function addScripts(srcs, onComplete)
 	document.head.appendChild(script);
 }
 require([
-		'js/CodeCollision.js',
-		 'js/Generics/Game.js',
-		 'js/Generics/GameObject.js',
-		 'js/Generics/Player.js',
-		 'js/Generics/Team.js',
-		 'js/Generics/Strategy.js'
-		],
-		function() {
-			CodeCollision.Initialize();
-		});
+'https://pagecdn.io/lib/ace/1.4.12/ace.js',
+'js/CodeCollision.js',
+'js/Editor.js',
+ 'js/Generics/Game.js',
+ 'js/Generics/GameObject.js',
+ 'js/Generics/Player.js',
+ 'js/Generics/Team.js',
+ 'js/Generics/Strategy.js'
+],
+function() {
+	CodeCollision.Initialize();
+});
