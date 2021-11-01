@@ -82,8 +82,8 @@ class Editor
 		
 		let testBtn = document.createElement("button");
 		testBtn.className = 'testBtn';
-		testBtn.title = 'Test';
-		testBtn.innerHTML = 'Test';
+		testBtn.title = 'Run';
+		testBtn.innerHTML = 'Run';
 		testBtn.editor = this;
 		testBtn.onclick = function() { this.editor.runStrategyTest(); };
 		toolbar.appendChild(testBtn);
@@ -98,8 +98,8 @@ class Editor
 		
 		let closeBtn = document.createElement("button");
 		closeBtn.className = 'closeBtn';
-		closeBtn.title = 'Close';
-		closeBtn.innerHTML = 'Close';
+		closeBtn.title = 'Close Editor';
+		closeBtn.innerHTML = 'Close Editor';
 		closeBtn.editor = this;
 		closeBtn.onclick = function() { this.editor.hide(); };
 		toolbar.appendChild(closeBtn);
@@ -110,6 +110,7 @@ class Editor
 		var code = false;
 		if (this.strategySelection.value==-1)
 		{
+			this.strategySelection.selectedIndex = 0;
 			CodeCollision.BrowseLocalFiles();
 			return;
 		}
@@ -125,7 +126,7 @@ class Editor
 				if (CodeCollision.Strategies[i].name.toLowerCase() == this.strategySelection.value.toLowerCase())
 				{
 					code = (new CodeCollision.Strategies[i]()).execute.toString();
-					this.strategyNameInput.value = CodeCollision.Strategies[i].name;
+					this.strategyNameInput.value = 'new'+CodeCollision.Strategies[i].name;
 					break;
 				}
 			}
@@ -201,7 +202,7 @@ class Editor
 	
 	output(s)
 	{
-		this.console.value += '> '+s+'\r\n';
+		this.console.value += ' > '+s+'\r\n';
 		this.console.scrollTop = this.console.scrollHeight;
 	}
 	

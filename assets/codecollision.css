@@ -128,8 +128,9 @@ button
 	background-color:#FFFFFF;
 	cursor:pointer;
 }
-.loadBtn { border:2px solid #247BA0; color: #247BA0; margin-right:5px; }
-.startBtn { border:2px solid #F25F5C; color: #F25F5C; margin-left:5px; }
+.loadBtn { border:2px solid #247BA0; color: #247BA0; margin-left:5px; }
+.editBtn { border:2px solid #247BA0; color: #247BA0; margin-right:5px; }
+.startBtn { display:block;border:2px solid #F25F5C; color: #F25F5C;width:500px;margin-top:10px;  }
 .startBtn:disabled { border:2px solid #50514F;color: #50514F;cursor:default; }
 .selectBtnContainer {  }
 .ingameOptions

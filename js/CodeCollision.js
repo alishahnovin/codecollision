@@ -332,7 +332,7 @@ class CodeCollision
 		
 		var editStrategiesBtn = document.createElement("button");
 		editStrategiesBtn.innerHTML = "Edit";
-		editStrategiesBtn.className = "loadBtn";
+		editStrategiesBtn.className = "editBtn";
 		editStrategiesBtn.onclick = function() { CodeCollision.ToggleEditMode(true); };
 		CodeCollision.Container.appendChild(editStrategiesBtn);
 		
