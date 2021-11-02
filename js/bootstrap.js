@@ -44,5 +44,5 @@ require([
  'js/Generics/Strategy.js'
 ],
 function() {
-	CodeCollision.Initialize();
+	CodeCollision.Initialize(CODECOLLISIONCONFIG);
 });

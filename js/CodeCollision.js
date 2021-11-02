@@ -13,6 +13,8 @@ class CodeCollision
 	static StrategyLoader = false;
 	static Editor = false;
 	
+	static IsDemo = false;
+	
 	//tod: this whole class has gotten really large, too many responsibilities - need to break it up
 	
 	//bug: when close editor and then stop game... error on hometeam.strategy.name 
@@ -26,8 +28,10 @@ class CodeCollision
 	};
 	static GameType = false;
 	
-	static Initialize()
+	static Initialize({ isDemo, containerId })
 	{
+		var hostContainer = containerId && document.getElementById(containerId)? document.getElementById(containerId) : document.body;
+		
 		var gameTypes = CodeCollision.GameTypes;
 		CodeCollision.GameTypes = [];
 		for(var gameType in gameTypes)
@@ -37,65 +41,72 @@ class CodeCollision
 		
 		CodeCollision.Container = document.createElement("div");
 		CodeCollision.Container.className = 'gameContainer';
-		document.body.appendChild(CodeCollision.Container);
+		hostContainer.appendChild(CodeCollision.Container);
 				
 		CodeCollision.LeaderBoard = document.createElement("div");
 		CodeCollision.LeaderBoard.className = 'leaderBoard';
 		CodeCollision.LeaderBoard.style.display = 'none';
-		document.body.appendChild(CodeCollision.LeaderBoard);
+		hostContainer.appendChild(CodeCollision.LeaderBoard);
 		
 		CodeCollision.InGameOptions = document.createElement("div");
 		CodeCollision.InGameOptions.className = 'ingameOptions';
 		CodeCollision.InGameOptions.style.display = 'none';
-		document.body.appendChild(CodeCollision.InGameOptions);
 		
-		
-		let fullScreenBtn = document.createElement("button");
-		fullScreenBtn.innerHTML = '&#8689;';
-		fullScreenBtn.title = 'Toggle full-screen mode';
-		fullScreenBtn.onclick = function() { CodeCollision.ToggleFullScreen(true); };
-		CodeCollision.InGameOptions.appendChild(fullScreenBtn);
-		if (document.addEventListener)
+		if (isDemo)
 		{
-			document.addEventListener('fullscreenchange', function() { CodeCollision.ToggleFullScreen(CodeCollision.GetIsFullScreen());}, false);
-			document.addEventListener('mozfullscreenchange', function() { CodeCollision.ToggleFullScreen(CodeCollision.GetIsFullScreen()); }, false);
-			document.addEventListener('MSFullscreenChange', function() { CodeCollision.ToggleFullScreen(CodeCollision.GetIsFullScreen()); }, false);
-			document.addEventListener('webkitfullscreenchange', function() { CodeCollision.ToggleFullScreen(CodeCollision.GetIsFullScreen()); }, false);
+			CodeCollision.IsDemo = true;
+			CodeCollision.Launch('demo');
+			CodeCollision.Editor = { enabled: false };
+		} else {
+			hostContainer.appendChild(CodeCollision.InGameOptions);
+			
+			let fullScreenBtn = document.createElement("button");
+			fullScreenBtn.innerHTML = '&#8689;';
+			fullScreenBtn.title = 'Toggle full-screen mode';
+			fullScreenBtn.onclick = function() { CodeCollision.ToggleFullScreen(true); };
+			CodeCollision.InGameOptions.appendChild(fullScreenBtn);
+			if (document.addEventListener)
+			{
+				document.addEventListener('fullscreenchange', function() { CodeCollision.ToggleFullScreen(CodeCollision.GetIsFullScreen());}, false);
+				document.addEventListener('mozfullscreenchange', function() { CodeCollision.ToggleFullScreen(CodeCollision.GetIsFullScreen()); }, false);
+				document.addEventListener('MSFullscreenChange', function() { CodeCollision.ToggleFullScreen(CodeCollision.GetIsFullScreen()); }, false);
+				document.addEventListener('webkitfullscreenchange', function() { CodeCollision.ToggleFullScreen(CodeCollision.GetIsFullScreen()); }, false);
+			}
+			
+			let skipBtn = document.createElement("button");
+			skipBtn.innerHTML = '&#187;';
+			skipBtn.title = 'Skip Match';
+			skipBtn.onclick = function() {
+				if (confirm("Skip this match?"))
+				{
+					CodeCollision.SkipMatch(CodeCollision.Game.homeTeam.score!=CodeCollision.Game.awayTeam.score && confirm("Award game to " + (CodeCollision.Game.homeTeam.score>CodeCollision.Game.awayTeam.score ? CodeCollision.Game.homeTeam.strategy.label :  CodeCollision.Game.awayTeam.strategy.label) + "?"));
+				}
+			};
+			CodeCollision.InGameOptions.appendChild(skipBtn);
+			
+			let stopBtn = document.createElement("button");
+			stopBtn.innerHTML = '&#215;';
+			stopBtn.title = 'End Game';
+			stopBtn.onclick = function() {
+				if (confirm("End all rounds?"))
+				{
+					CodeCollision.StopGame();
+				}
+			};
+			CodeCollision.InGameOptions.appendChild(stopBtn);
+		
+			CodeCollision.StrategyLoader = document.createElement("input");
+			CodeCollision.StrategyLoader.type = "file";
+			CodeCollision.StrategyLoader.multiple = true;
+			CodeCollision.StrategyLoader.id = "strategyFiles";
+			CodeCollision.StrategyLoader.accept = ".js";
+			CodeCollision.StrategyLoader.style.display = "none";
+			CodeCollision.StrategyLoader.addEventListener('change', CodeCollision.LoadStrategies, false);
+			CodeCollision.Container.appendChild(CodeCollision.StrategyLoader);
+			
+			CodeCollision.PresentHeader();
+			CodeCollision.Editor = new Editor();
 		}
-		
-		let skipBtn = document.createElement("button");
-		skipBtn.innerHTML = '&#187;';
-		skipBtn.title = 'Skip Match';
-		skipBtn.onclick = function() {
-			if (confirm("Skip this match?"))
-			{
-				CodeCollision.SkipMatch(CodeCollision.Game.homeTeam.score!=CodeCollision.Game.awayTeam.score && confirm("Award game to " + (CodeCollision.Game.homeTeam.score>CodeCollision.Game.awayTeam.score ? CodeCollision.Game.homeTeam.strategy.label :  CodeCollision.Game.awayTeam.strategy.label) + "?"));
-			}
-		};
-		CodeCollision.InGameOptions.appendChild(skipBtn);
-		
-		let stopBtn = document.createElement("button");
-		stopBtn.innerHTML = '&#215;';
-		stopBtn.title = 'End Game';
-		stopBtn.onclick = function() {
-			if (confirm("End all rounds?"))
-			{
-				CodeCollision.StopGame();
-			}
-		};
-		CodeCollision.InGameOptions.appendChild(stopBtn);
-		
-		CodeCollision.StrategyLoader = document.createElement("input");
-		CodeCollision.StrategyLoader.type = "file";
-		CodeCollision.StrategyLoader.multiple = true;
-		CodeCollision.StrategyLoader.id = "strategyFiles";
-		CodeCollision.StrategyLoader.accept = ".js";
-		CodeCollision.StrategyLoader.style.display = "none";
-		CodeCollision.StrategyLoader.addEventListener('change', CodeCollision.LoadStrategies, false);
-		CodeCollision.Container.appendChild(CodeCollision.StrategyLoader);
-		
-		CodeCollision.Editor = new Editor();
-		CodeCollision.PresentHeader();
 	}
 	
 	static Launch(game)
@@ -111,7 +122,13 @@ class CodeCollision
 		CodeCollision.GameTypes[label].playerType = playerType;
 		CodeCollision.GameTypes[label].teamType = teamType;
 		CodeCollision.GameTypes[label].hasLaunched = true;
-		CodeCollision.PresentGameOptions();
+		
+		if (CodeCollision.IsDemo)
+		{
+			
+		} else {
+			CodeCollision.PresentGameOptions();
+		}
 	}
 	
 	static RegisterGameType(label, path)
@@ -121,6 +138,11 @@ class CodeCollision
 	
 	static Register(type)
 	{
+		if (!CodeCollision.GameType)
+		{
+			return;
+		}
+		
 		if (type.prototype instanceof CodeCollision.GameType.baseStrategy)
 		{
 			for(let i=0;i<CodeCollision.Strategies.length;i++)
@@ -502,7 +524,7 @@ class CodeCollision
 	
 	static FinishMatch()
 	{
-		if (CodeCollision.Editor.enabled)
+		if (CodeCollision.Editor.enabled || CodeCollision.IsDemo)
 		{
 			CodeCollision.StartMatch(CodeCollision.Editor.testStrategy, CodeCollision.Editor.testStrategy);
 			return;
@@ -589,7 +611,7 @@ class CodeCollision
 		CodeCollision.Container.innerHTML = '';
 		CodeCollision.HideLeaderBoard();
 		const fullScreen = CodeCollision.GetIsFullScreen();
-		CodeCollision.ShowInGameOptions(!fullScreen && !CodeCollision.Editor.enabled);
+		CodeCollision.ShowInGameOptions(!fullScreen && !CodeCollision.Editor.enabled && !CodeCollision.IsDemo);
 		if (fullScreen)
 		{
 			CodeCollision.Container.classList.add('fullScreenGameContainer');
@@ -600,6 +622,6 @@ class CodeCollision
 		CodeCollision.Game = new CodeCollision.GameType.gameType({ homeStrategy:team1, awayStrategy:team2, playerType:CodeCollision.GameType.playerType, teamType: CodeCollision.GameType.teamType });
 		CodeCollision.Container.appendChild(CodeCollision.Game.canvas);
 		
-		setTimeout(function() { CodeCollision.Game.start(); }, CodeCollision.Editor.enabled? 1 : 1000);
+		setTimeout(function() { CodeCollision.Game.start(); }, CodeCollision.Editor.enabled || CodeCollision.IsDemo? 1 : 1000);
 	}
 }
