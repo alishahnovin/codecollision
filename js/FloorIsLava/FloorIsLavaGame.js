@@ -6,6 +6,7 @@ class FloorIsLavaGame extends Game
 	isReady = false;
 	drag = 1.075;
 	
+	fieldColor = 'rgba(200,200,200,0.2)';
 	
 	initialPositions =
 	{
@@ -17,7 +18,7 @@ class FloorIsLavaGame extends Game
 	holeRadiusMin = 25;
 	holeRadiusMax = 50;
 	holes = [];
-	holeColor = '#FDCA00';
+	holeColor = '#FFFFFF';
 	
 	constructor(params) 
 	{
@@ -49,8 +50,8 @@ class FloorIsLavaGame extends Game
 		
 		this.context.beginPath();
 		this.context.arc(this.canvas.width/2, this.canvas.height/2, this.fieldRadius*this.scale, 0, 2 * Math.PI);
-		this.context.moveTo(this.canvas.width/2, this.canvas.height/2 - this.fieldRadius*this.scale);
-		this.context.lineTo(this.canvas.width/2, this.canvas.height/2 + this.fieldRadius*this.scale);
+		this.context.fillStyle = this.fieldColor;
+		this.context.fill();
 		this.context.closePath();
 		this.context.stroke();
 		
@@ -72,8 +73,18 @@ class FloorIsLavaGame extends Game
 		this.context.fillStyle = this.holeColor;
 		this.context.fill();
 		this.context.restore();
-		this.context.fillStyle = this.holeColor;
+		//this.context.fillStyle = this.holeColor;
+		//this.context.fill();
+		
+		this.context.save();
+		this.context.beginPath();
+		this.context.moveTo(this.canvas.width/2, this.canvas.height/2);
+		this.context.arc(this.canvas.width/2, this.canvas.height/2, this.fieldRadius*this.scale, 0, 2 * Math.PI);
+		this.context.fillStyle = this.fieldLines;
+		this.context.globalCompositeOperation = "destination-in";
 		this.context.fill();
+		this.context.closePath();
+		this.context.restore();
 			
 		this.context.strokeStyle = this.strokeStyle;
 		
@@ -93,8 +104,9 @@ class FloorIsLavaGame extends Game
 		if(!this.isReady) { return; }
 		
 		let holeRadius = Math.floor(Math.random() * (this.holeRadiusMax - this.holeRadiusMin)) + this.holeRadiusMin;
-		let holeX = Math.floor(Math.random() * this.fieldRadius*2)-this.fieldRadius;
-		let holeY = Math.floor(Math.random() * this.fieldRadius*2)-this.fieldRadius;
+		let angle = Math.random() * 360;
+		let holeX = Math.random() *this.fieldRadius * Math.sin(angle);
+		let holeY = Math.random() *this.fieldRadius * Math.cos(angle);
 		this.holes.push({ x:holeX , y:holeY, radius:holeRadius});
 		
 		this.redraw();
