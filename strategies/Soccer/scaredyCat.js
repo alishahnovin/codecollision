@@ -15,7 +15,6 @@ class scaredyCat extends SoccerStrategy
 {
 	static strategy = CodeCollision.Register(this); //REQUIRED
 	
-	
 	execute //Return Power (0-100), and Angle (0 is forward, 90 is up, -90 is down, 180 is backwards)
 	({
 		id, //Represents the player on the field.  (Values: -1, 0, 1)

@@ -225,12 +225,14 @@ button
 	border:none;
 	border-radius:0px;
 	padding:0px;
+	font:12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
 	font-size:10pt;
 }
 .editorToolbar select
 {
 	display:inline-block;
 	text-align:left;
+	height:20px;
 }
 .testBtn
 {
@@ -243,5 +245,6 @@ button
 .closeBtn
 {
 	color:#F25F5C;
+	float:right;
 }
 .bold { font-weight:bold; }

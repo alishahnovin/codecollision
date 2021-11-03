@@ -179,11 +179,13 @@ class CodeCollision
 			var reader = new FileReader();
 			reader.onload = function(e)
 			{
+				try {
 				var contents = e.target.result;
 				var script = document.createElement("script");
 				script.textContent = 'try { ' + contents + ' } catch(e) { console.log("Failed to load file: " + e); }';
 				document.body.appendChild(script);
 				filesLoaded++;
+				} catch(e) { console.log("Failed to load file: " + e); }
 			};
 			filesToLoad++;
 			reader.readAsText(file);
@@ -197,7 +199,7 @@ class CodeCollision
 				
 				if (CodeCollision.Editor.enabled)
 				{
-					CodeCollision.Editor.refreshStrategySelection();
+					CodeCollision.Editor.refreshStrategySelection(true);
 				} else {
 					CodeCollision.PresentGameOptions();
 				}

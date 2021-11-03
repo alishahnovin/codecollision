@@ -90,16 +90,16 @@ class Editor
 		
 		let saveBtn = document.createElement("button");
 		saveBtn.className = 'saveBtn';
-		saveBtn.title = 'Save File';
-		saveBtn.innerHTML = 'Save File';
+		saveBtn.title = 'Export';
+		saveBtn.innerHTML = 'export';
 		saveBtn.editor = this;
 		saveBtn.onclick = function() { this.editor.save(); };
 		toolbar.appendChild(saveBtn);
 		
 		let closeBtn = document.createElement("button");
 		closeBtn.className = 'closeBtn';
-		closeBtn.title = 'Close Editor';
-		closeBtn.innerHTML = 'Close Editor';
+		closeBtn.title = 'Close';
+		closeBtn.innerHTML = 'Close';
 		closeBtn.editor = this;
 		closeBtn.onclick = function() { this.editor.hide(); };
 		toolbar.appendChild(closeBtn);
@@ -108,16 +108,11 @@ class Editor
 	menuSelectionChange()
 	{
 		var code = false;
+		
 		if (this.strategySelection.value==-1)
 		{
-			this.strategySelection.selectedIndex = 0;
 			CodeCollision.BrowseLocalFiles();
 			return;
-		}
-		else if (this.strategySelection.value == this.defaultStrategy.label)
-		{	
-			code = (new this.defaultStrategy()).execute.toString();
-			this.strategyNameInput.value = this.defaultName;
 		}
 		else
 		{
@@ -125,6 +120,7 @@ class Editor
 			{
 				if (CodeCollision.Strategies[i].name.toLowerCase() == this.strategySelection.value.toLowerCase())
 				{
+					this.output('Loading '+ this.strategySelection.value + '...');
 					code = (new CodeCollision.Strategies[i]()).execute.toString();
 					this.strategyNameInput.value = 'new'+CodeCollision.Strategies[i].name;
 					break;
@@ -132,16 +128,33 @@ class Editor
 			}
 		}
 		
-		if (code)
+		if (!code)
 		{
-			this.editor.setValue(code, -1);
-			this.output('Ready');
-			this.runStrategyTest();
+			code = '';
+			code += "/* Build your own strategy below. When you're done,\r\n";
+			code += " * export the strategy so you can save the strategy\r\n";
+			code += " * this is what you'll use to compete.*/\r\n\r\n";
+			code += (new this.defaultStrategy()).execute.toString();
+			this.strategyNameInput.value = this.defaultName;
 		}
+		
+		if (this.editor.getValue()==code)
+		{
+			return;
+		}
+		
+		this.editor.setValue(code, -1);
+		this.output('Ready');
+		this.runStrategyTest();
 	};
 	
-	refreshStrategySelection()
+	refreshStrategySelection(chooseLast)
 	{
+		if (!this.defaultStrategy)
+		{
+			return;
+		}
+		
 		this.strategySelection.innerHTML = '';
 		
 		let newItem = document.createElement("option");
@@ -149,7 +162,7 @@ class Editor
 		newItem.id = this.testStrategy;
 		newItem.innerText = 'New';
 		newItem.value = this.testStrategy.label;
-		newItem.selected = true;
+		newItem.selected = chooseLast?? true;
 		this.strategySelection.appendChild(newItem);
 		
 		let loadItem = document.createElement("option");
@@ -161,6 +174,7 @@ class Editor
 		
 		let group = document.createElement("optgroup");
 		group.label = 'Strategies';
+		let optionItem = false;
 		for(let i=0;i<CodeCollision.Strategies.length;i++)
 		{
 			if (!(CodeCollision.Strategies[i].prototype instanceof CodeCollision.GameType.baseStrategy) || CodeCollision.Strategies[i].label.toLowerCase() == this.defaultName.toLowerCase())
@@ -168,7 +182,20 @@ class Editor
 				continue;
 			}
 			
-			let optionItem = document.createElement("option");
+			var isEditingStrategy = false;
+			for (let j=0;j<this.strategies.length;j++)
+			{
+				if (this.strategies[j].label.toLowerCase() == CodeCollision.Strategies[i].label.toLowerCase())
+				{
+					isEditingStrategy = true;
+				}
+			}
+			if (isEditingStrategy)
+			{
+				continue;
+			}
+			
+			optionItem = document.createElement("option");
 			optionItem.id = CodeCollision.Strategies[i].label;
 			optionItem.innerText = CodeCollision.Strategies[i].label;
 			optionItem.value = CodeCollision.Strategies[i].label;
@@ -177,7 +204,12 @@ class Editor
 		if (group.children.length>0)
 		{
 			this.strategySelection.appendChild(group);
+			if (chooseLast && optionItem)
+			{
+				optionItem.selected = true;
+			}
 		}
+		this.menuSelectionChange();
 	}
 	
 	async save()
@@ -215,10 +247,6 @@ class Editor
 		this.enabled = true;
 		this.Container.style.display = 'block';
 		this.refreshStrategySelection();
-		var code = (new this.defaultStrategy()).execute.toString();
-		this.editor.setValue(code, -1);
-		this.output('Ready');
-		this.runStrategyTest();
 	}
 	
 	hide()
@@ -228,6 +256,7 @@ class Editor
 			CodeCollision.Game.stop();
 		}
 		this.enabled = false;
+		this.defaultStrategy = false;
 		this.Container.style.display = 'none';
 		for(let i=0;i<this.strategies.length;i++)
 		{
@@ -246,7 +275,19 @@ class Editor
 	
 	runStrategyTest()
 	{
-		this.output("Compiling...");
+		let label = this.strategyNameInput.value;
+		this.output("Compiling "+label+"...");
+		
+		var annot = this.editor.getSession().getAnnotations();
+
+		for (var key in annot)
+		{
+			if (annot.hasOwnProperty(key) && annot[key].type=='error')
+			{
+				this.output(annot[key].text + "on line " + " " + annot[key].row);
+				return;
+			}
+		}
 		
 		this.testStrategy = false;
 	
@@ -262,7 +303,7 @@ class Editor
 			{
 				if (CodeCollision.Strategies[i].name.toLowerCase() == strategyType.toLowerCase())
 				{
-					CodeCollision.Strategies[i].label = this.strategyNameInput.value;
+					CodeCollision.Strategies[i].label = label;
 					this.testStrategy = CodeCollision.Strategies[i];
 					this.strategies.push(this.testStrategy);
 					break;
@@ -271,7 +312,7 @@ class Editor
 
 			if (this.testStrategy)
 			{
-				this.output("Running...");
+				this.output("Running "+label+"...");
 				CodeCollision.StartMatch(this.testStrategy, this.testStrategy);
 			} else {
 				this.output('Error');
