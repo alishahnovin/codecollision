@@ -5,6 +5,7 @@ class SoccerGame extends Game
 	maxScore = 3;
 	scoreMarkerRadius = 15;
 	isReady = false;
+	timeout = 90;
 	
 	initialPositions =
 	{
@@ -62,14 +63,12 @@ class SoccerGame extends Game
 		let scoreMarkerMarginX = (scoreMarkerRadius*3);
 		let scoreMarkerMarginY = (scoreMarkerRadius*3/2);
 		
-		let fontSize = Math.round(30*this.scale);
-		this.context.font = fontSize+"px Didact Gothic";
-		this.context.fillStyle = this.homeTeam.color;
-		this.context.fillText(this.homeTeam.strategy.label.toLowerCase(), x1, y1 - scoreMarkerMarginY);
-		
-		this.context.fillStyle = this.awayTeam.color;
-		this.context.textAlign = 'right';
-		this.context.fillText(this.awayTeam.strategy.label.toLowerCase(), x2, y1 - scoreMarkerMarginY);
+		this.setInfoLabelPositions(
+		{
+			homeLabelPosition:{x:x1,y:y1 - scoreMarkerMarginY},
+			awayLabelPosition:{x:x2,y:y1 - scoreMarkerMarginY},
+			timeLabelPosition:{x:this.canvas.width/2,y:y1 - scoreMarkerMarginY}
+		});
 		
 		for(let i=0;i<this.maxScore;i++)
 		{
@@ -99,11 +98,24 @@ class SoccerGame extends Game
 		this.context.closePath();
 		this.context.fill();
 		//this.context.stroke();
+		
 	};
 	
 	checkGameConditions()
 	{
 		if(!this.isReady) { return; }
+		
+		if (this.timer.hasTimedOut)
+		{
+			if (this.awayTeam.score==this.homeTeam.score)
+			{
+				this.winner = false;
+			} else {
+				this.winner = this.awayTeam.score>this.homeTeam.score? this.awayTeam.strategy : this.homeTeam.strategy;
+			}
+			CodeCollision.FinishMatch();
+			return;
+		}
 		
 		if (this.ball.x - this.ball.radius*this.scale - this.context.lineWidth <= this.homeTeam.net.topPost.x+this.context.lineWidth && this.ball.y>=this.homeTeam.net.topPost.y && this.ball.y<=this.homeTeam.net.bottomPost.y)
 		{

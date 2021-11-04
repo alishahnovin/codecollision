@@ -5,12 +5,15 @@ class Game
 	strokeWidth = 5;
 	winner = false;
 	
+	timeout = false;
+	timer = false;
+	
 	drag = 1.025;
 	
 	players = [];
 	objects = [];
 	
-	constructor({ homeStrategy, awayStrategy, playerType, teamType })
+	constructor({ homeStrategy, awayStrategy, playerType, teamType, isEditMode })
 	{
 		this.fieldX = 0;
 		this.fieldY = 0;
@@ -30,6 +33,12 @@ class Game
 		this.objects = [];
 		this.homeTeam = new this.teamType({ game:this, color: "#F25F5C", strategy:homeStrategy});
 		this.awayTeam = new this.teamType({ game:this, color: "#247BA0", strategy:awayStrategy, isMirrored:true});
+		
+		this.homeLabelPosition = { x:0, y:0};
+		this.awayLabelPosition = { x:0, y:0};
+		this.timeLabelPosition = { x:0, y:0};
+		
+		this.isEditMode = isEditMode;
 		
 		this.redraw();
 	}
@@ -53,22 +62,30 @@ class Game
 		this.fieldHeight = this.height - (this.marginY*2);
 	}
 	
+	setInfoLabelPositions({ homeLabelPosition, awayLabelPosition, timeLabelPosition })
+	{
+		this.homeLabelPosition = homeLabelPosition?? { x:0, y:0};
+		this.awayLabelPosition = awayLabelPosition?? { x:0, y:0};
+		this.timeLabelPosition = timeLabelPosition?? { x:0, y:0};
+	}
+	
 	start()
 	{
+		this.timer = new Timer({ duration: this.isEditMode? -1 : this.timeout, game: this });
+		this.timer.start();
 		this.reset();
-		this.Interval = setInterval(function() { if (CodeCollision.Game==null) { return ; } CodeCollision.Game.tick(); }, 10);
-	};
+	}
 	
 	stop()
 	{
 		this.isReady = false;
 		this.paused = true;
-		clearInterval(this.Interval);
-	};
+		this.timer.stop();
+	}
 	
 	drawField()
 	{
-	};
+	}
 	
 	redraw(clear=true)
 	{
@@ -90,10 +107,33 @@ class Game
 				this.context.fillStyle = this.objects[i].color;
 				this.context.closePath();
 				this.context.fill();
-				//this.context.stroke();
 			}
 		}
-	};
+		
+		this.drawInfoLabels();
+	}
+	
+	drawInfoLabels()
+	{
+		let fontSize = Math.round(30*this.scale);
+		this.context.font = fontSize+"px Didact Gothic";
+		this.context.textAlign = this.homeLabelPosition.align?? 'left';
+		this.context.fillStyle = this.homeTeam.color;
+		this.context.fillText(this.homeTeam.strategy.label.toLowerCase(), this.homeLabelPosition.x, this.homeLabelPosition.y);
+		
+		this.context.fillStyle = this.awayTeam.color;
+		this.context.textAlign = this.awayLabelPosition.align?? 'right';
+		this.context.fillText(this.awayTeam.strategy.label.toLowerCase(), this.awayLabelPosition.x, this.awayLabelPosition.y);
+		
+		if (this.timer.canTimeOut)
+		{
+			let fontSize = Math.round(40*this.scale);
+			this.context.font = fontSize+"px Didact Gothic";
+			this.context.textAlign = this.timeLabelPosition.align?? 'center';
+			this.context.fillStyle = this.timer.remaining <= 10 ? "#F25F5C" : "#000000";
+			this.context.fillText(this.timer.toString(), this.timeLabelPosition.x, this.timeLabelPosition.y);
+		}
+	}
 		
 	drawVector({ color, x, y, vx, vy, amplify, radius })
 	{
@@ -110,7 +150,6 @@ class Game
 		this.context.lineTo(x2 * this.scale, y2 * this.scale);
 		
 		let size = 15*this.scale;
-		
 		this.context.translate(x2 * this.scale,y2 * this.scale);
 		
 		this.context.rotate(Math.atan2(y2-y, x2-x));
@@ -123,7 +162,7 @@ class Game
 		this.context.restore();
 		
 		this.context.translate(0,0);		
-	};
+	}
 
 	checkCollisions()
 	{
@@ -135,11 +174,11 @@ class Game
 			}
 			this.objects[i].boundaryCollision();
 		}
-	};
+	}
 	
 	checkGameConditions()
 	{
-	};
+	}
 	
 	reset()
 	{
@@ -148,7 +187,7 @@ class Game
 			this.objects[i].reset();
 		}
 		this.redraw();
-	};
+	}
 
 	tick()
 	{
@@ -180,7 +219,7 @@ class Game
 			this.nextMove();
 			setTimeout(function(game) { game.paused = false; }, 1000, this);
 		}
-	};
+	}
 	
 	nextMove()
 	{

@@ -3,6 +3,7 @@ class SoccerChessGame extends SoccerGame
 	static game = CodeCollision.RegisterGameLoaded({ label: 'Soccer Chess', gameType: this, baseStrategy: SoccerStrategy, playerType: SoccerChessPlayer, teamType: SoccerTeam }); //REQUIRED
 	
 	currentTeamTurn = false;
+	timeout = 180;
 	
 	constructor(params) 
 	{

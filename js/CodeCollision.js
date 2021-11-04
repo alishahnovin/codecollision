@@ -621,7 +621,7 @@ class CodeCollision
 			CodeCollision.Container.classList.remove('fullScreenGameContainer');
 		}
 		
-		CodeCollision.Game = new CodeCollision.GameType.gameType({ homeStrategy:team1, awayStrategy:team2, playerType:CodeCollision.GameType.playerType, teamType: CodeCollision.GameType.teamType });
+		CodeCollision.Game = new CodeCollision.GameType.gameType({ homeStrategy:team1, awayStrategy:team2, playerType:CodeCollision.GameType.playerType, teamType: CodeCollision.GameType.teamType, isEditMode:CodeCollision.Editor.enabled || CodeCollision.IsDemo });
 		CodeCollision.Container.appendChild(CodeCollision.Game.canvas);
 		
 		setTimeout(function() { CodeCollision.Game.start(); }, CodeCollision.Editor.enabled || CodeCollision.IsDemo? 1 : 1000);

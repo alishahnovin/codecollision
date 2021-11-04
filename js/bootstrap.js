@@ -38,6 +38,7 @@ require([
 'js/CodeCollision.js',
 'js/Editor.js',
  'js/Generics/Game.js',
+ 'js/Generics/Timer.js',
  'js/Generics/GameObject.js',
  'js/Generics/Player.js',
  'js/Generics/Team.js',
