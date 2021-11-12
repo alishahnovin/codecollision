@@ -1,4 +1,4 @@
-![](https://www.codecollision.dev/preview.png)
+<p align="center"> <img src="https://www.codecollision.dev/git-head.png" alt="code / collision" /> </p>
 
 People enter the coding world in a differently than when I was growing up. The internet increased our reach and many first-steps are in building business, productivity, & lifestyle applications.
 
