@@ -53,7 +53,7 @@ class FloorIsLavaPlayer extends GameObject
 			teamMates: teamMates,
 			otherTeam: otherTeam,
 		});
-		var power = Math.max(1, Math.min(this.maxpower, strategyResult.power/10));
+		var power = Math.max(0, Math.min(this.maxpower, strategyResult.power/10));
 
 		this.angle = this.isMirrored? 180+strategyResult.angle : strategyResult.angle*-1;
 		this.vx = (power * Math.cos(this.angle * Math.PI / 180));
