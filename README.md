@@ -59,3 +59,16 @@ class mySoccerStrategy extends SoccerStrategy
 	};
 }
 ```
+
+# How do I compete?
+Right now, the idea is anyone to host their own "events" - get a bunch of coders together, pick one of the game types, give yourselves an agreed-upon coding time: 1 hour, 1 day, 1 week. Then host a competition where everyone's code is pitted against each other's!
+
+# How do I get started?
+1.  Grab the code / collision repo.
+2. Launch codecollision.html in the top level directory.
+3. Select one of the games from the drop-down list.
+4. Hit **Edit** to use the built-in  [Ace Editor ](https://ace.c9.io/ "Ace Editor ") to build your strategy.
+5. You can test your strategy in real-time by hitting **Run**.
+6. When you are happy with your strategy hit **Export** to save your strategy as a .JS file.
+7. You can then load your strategy and others on the game screen by clicking **Load**.
+8. Select which strategies you want to have compete and hit **Start**.
