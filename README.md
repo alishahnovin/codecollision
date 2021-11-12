@@ -8,11 +8,9 @@ Building games taught me a lot. There were the same basics you need in a busines
 
 The best part was building the in-game AI. That's where magic happens - and not just magic. **So much learning.** Translating a game strategy into code ***hard***. And ultimately, it makes you a stronger coder. 
 
-**code / collision is an attempt to expose application developers to the world of game development, while lowering the bar so you can focus on the interesting part. **
+**code / collision is an attempt to expose application developers to the world of game development, while lowering the bar so you can focus on the interesting part.**
 
-The game dynamics are handled.
-Object collision is handled.
-### **You build the strategy.**
+The game dynamics are handled. Object collision is handled. **You build the strategy.**
 
 # How does it work?
 code / collision is an ever-expand library of games that work on the same set of principles:
@@ -72,5 +70,5 @@ Right now, the idea is anyone to host their own "events" - get a bunch of coders
 7. You can then load your strategy and others on the game screen by clicking **Load**.
 8. Select which strategies you want to have compete and hit **Start**.
 
-# Check out a code / collision demo
+# Check out a demo
 [![code / collision demo](https://img.youtube.com/vi/jvfGyRmCilg/0.jpg)](https://www.youtube.com/watch?v=jvfGyRmCilg)
