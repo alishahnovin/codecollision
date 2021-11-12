@@ -72,3 +72,6 @@ Right now, the idea is anyone to host their own "events" - get a bunch of coders
 6. When you are happy with your strategy hit **Export** to save your strategy as a .JS file.
 7. You can then load your strategy and others on the game screen by clicking **Load**.
 8. Select which strategies you want to have compete and hit **Start**.
+
+# Check out a code / collision demo
+[![code / collision demo](https://img.youtube.com/vi/jvfGyRmCilg/0.jpg)](https://www.youtube.com/watch?v=jvfGyRmCilg)
