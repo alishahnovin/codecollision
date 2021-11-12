@@ -76,4 +76,4 @@ Right now, the idea is anyone to host their own "events." That is:
 [![code / collision demo](https://img.youtube.com/vi/jvfGyRmCilg/0.jpg)](https://www.youtube.com/watch?v=jvfGyRmCilg)
 
 # Release Notes
-**[2021-11-11] ** - code / collision is in pre-release. There's some definite code-cleanup that can be done, but in the interest of proving the concept, I'm making this available to a limited audience to help identify any issues, and where we can hopefully run an actual event together.
+**[2021-11-11]** - code / collision is in pre-release. There's some definite code-cleanup that can be done, but in the interest of proving the concept, I'm making this available to a limited audience to help identify any issues, and where we can hopefully run an actual event together.
