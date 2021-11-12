@@ -25,14 +25,12 @@ code / collision is an ever-expand library of games that work on the same set of
 <p align="center"> <img src="https://www.codecollision.dev/git-game.png" alt="code / collision" /> </p>
 
 # How do I code my strategy?
-code / collision was built in vanilla JS. As long as you know some basic JavasScript, you can write a strategy.
-
-Strategies look like this:
+code / collision was built in vanilla JS. As long as you know some basic JavasScript, you can write a strategy:
 
 ```javascript
 class mySoccerStrategy extends SoccerStrategy
 {
-	static strategy = CodeCollision.Register(this); //REQUIRED
+	static strategy = CodeCollision.Register(this); //REQUIRED; DO NOT REMOVE
 	
 	execute //Return Power (0-100), and Angle (0 is forward, 90 is up, -90 is down, 180 is backwards)
 	({
