@@ -13,3 +13,17 @@ The best part was building the in-game AI. That's where magic happens - and not 
 The game dynamics are handled.
 Object collision is handled.
 ### **You build the strategy.**
+
+# How does it work?
+
+![](https://www.codecollision.dev/git-game.png)
+
+code / collision is an ever-expand library of games that work on the same set of principles:
+- 2 teams
+- Can be simultaneous or turn-based
+- The game mechanics are handled
+- You determine what your team's strategy is for the desired game
+- You write the code for that strategy:
+ - You are given the game-state in the parameters
+ - You return 2 things: Angle you want to move, and overall Power.
+- Your code is called periodically, **once per player on your team**
