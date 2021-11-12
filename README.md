@@ -15,9 +15,6 @@ Object collision is handled.
 ### **You build the strategy.**
 
 # How does it work?
-
-![](https://www.codecollision.dev/git-game.png)
-
 code / collision is an ever-expand library of games that work on the same set of principles:
 - 2 teams
 - Can be simultaneous or turn-based
@@ -27,6 +24,7 @@ code / collision is an ever-expand library of games that work on the same set of
  - You are given the game-state in the parameters
  - You return 2 things: Angle you want to move, and overall Power.
 - Your code is called periodically, **once per player on your team**
+<p align="center"> <img src="https://www.codecollision.dev/git-game.png" alt="code / collision" /> </p>
 
 # How do I code my strategy?
 code / collision was built in vanilla JS. As long as you know some basic JavasScript, you can write a strategy.
@@ -54,7 +52,8 @@ class mySoccerStrategy extends SoccerStrategy
 			return { angle: ball.angle, power:Math.random()*100 };
 		}
 
-		//this player will go for the ball if the ball is infront of the player, otherwise they'll move straight back
+		//this player will go for the ball if the ball is infront of the player,
+		//otherwise they'll move straight back
 		return { angle: Math.abs(ball.angle<90)? ball.angle : 180, power:Math.random()*100 };
 	};
 }
