@@ -13,7 +13,7 @@ The best part was building the in-game AI. That's where magic happens - and not 
 The game dynamics are handled. Object collision is handled. **You build the strategy.**
 
 # How does it work?
-code / collision is an ever-expand library of games that work on the same set of principles:
+code / collision is an ever-expanding library of games that work on the same set of principles:
 - 2 teams
 - Can be simultaneous or turn-based
 - The game mechanics are handled
@@ -56,7 +56,11 @@ class mySoccerStrategy extends SoccerStrategy
 ```
 
 # How do I compete?
-Right now, the idea is anyone to host their own "events" - get a bunch of coders together, pick one of the game types, give yourselves an agreed-upon coding time: 1 hour, 1 day, 1 week. Then host a competition where everyone's code is pitted against each other's!
+Right now, the idea is anyone to host their own "events." That is:
+1. Get a bunch of coders together,
+2. Pick one of the game types,
+3. Give yourselves an agreed-upon coding time: 1 hour, 1 day, 1 week.
+4. Host a competition where each strategy is pitted against the other! *(code / collision will manage the round-robin and leader-board)*
 
 # How do I get started?
 1.  Grab the code / collision repo.
