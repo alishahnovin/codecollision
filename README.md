@@ -27,3 +27,35 @@ code / collision is an ever-expand library of games that work on the same set of
  - You are given the game-state in the parameters
  - You return 2 things: Angle you want to move, and overall Power.
 - Your code is called periodically, **once per player on your team**
+
+# How do I code my strategy?
+code / collision was built in vanilla JS. As long as you know some basic JavasScript, you can write a strategy.
+
+Strategies look like this:
+
+```javascript
+class mySoccerStrategy extends SoccerStrategy
+{
+	static strategy = CodeCollision.Register(this); //REQUIRED
+	
+	execute //Return Power (0-100), and Angle (0 is forward, 90 is up, -90 is down, 180 is backwards)
+	({
+		id, //Represents which player this strategy is for  (Values: -1, 0, 1)
+		position, // { x, y }
+		field, // { width, height }
+		teamMates, // [ {angle, distance, x, y} ]
+		otherTeam, // [ {angle, distance, x, y} ]
+		ball, // {angle, distance, x, y}
+		ownGoal, //{ topPost{angle, distance, x, y},  bottomPost{angle, distance, x, y} }
+		otherGoal //{ topPost{angle, distance, x, y},  bottomPost{angle, distance, x, y} }
+	})
+	{
+		if (id==0) { //this player will always go at the ball, with a random power-level
+			return { angle: ball.angle, power:Math.random()*100 };
+		}
+
+		//this player will go for the ball if the ball is infront of the player, otherwise they'll move straight back
+		return { angle: Math.abs(ball.angle<90)? ball.angle : 180, power:Math.random()*100 };
+	};
+}
+```
