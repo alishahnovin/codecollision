@@ -36,8 +36,11 @@ class SoccerPlayer extends Player
 			}
 		}
 		
-		let ownGoal = { topPost: this.getVectorToPoint(this.team.net.topPost),  bottomPost: this.getVectorToPoint(this.team.net.bottomPost) }
-		let otherGoal = { topPost: this.getVectorToPoint(this.otherTeam.net.topPost),  bottomPost: this.getVectorToPoint(this.otherTeam.net.bottomPost) }
+		let ownGoal = { topPost: this.getVectorToPoint(this.team.net.topPost),  bottomPost: this.getVectorToPoint(this.team.net.bottomPost) };
+		let otherGoal = { topPost: this.getVectorToPoint(this.otherTeam.net.topPost),  bottomPost: this.getVectorToPoint(this.otherTeam.net.bottomPost) };
+		
+		let ownScore = this.team==this.game.homeTeam? this.game.homeTeam.score : this.game.awayTeam.score;
+		let otherScore = this.team==this.game.homeTeam? this.game.awayTeam.score : this.game.homeTeam.score;
 		
 		var strategy = new this.strategy();
 		var strategyResult = strategy.execute({
@@ -48,7 +51,9 @@ class SoccerPlayer extends Player
 			otherTeam: otherTeam,
 			ball: this.getVectorToPoint(this.game.ball),
 			ownGoal: ownGoal,
-			otherGoal : otherGoal
+			otherGoal : otherGoal,
+			ownScore : ownScore,
+			otherScore : otherScore
 		});
 		var power = Math.max(0, Math.min(this.maxpower, strategyResult.power/10));
 		

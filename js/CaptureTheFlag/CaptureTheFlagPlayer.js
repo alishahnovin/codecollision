@@ -39,6 +39,9 @@ class CaptureTheFlagPlayer extends Player
 		let ownFlag = this.team==this.game.homeTeam? this.getVectorToPoint(this.game.homeTeam.flag) : this.getVectorToPoint(this.game.awayTeam.flag);
 		let otherFlag = this.team==this.game.homeTeam? this.getVectorToPoint(this.game.awayTeam.flag) : this.getVectorToPoint(this.game.homeTeam.flag);
 		
+		let ownScore = this.team==this.game.homeTeam? this.game.homeTeam.score : this.game.awayTeam.score;
+		let otherScore = this.team==this.game.homeTeam? this.game.awayTeam.score : this.game.homeTeam.score;
+		
 		var strategy = new this.strategy();
 		var strategyResult = strategy.execute({
 			id:this.id,
@@ -47,7 +50,9 @@ class CaptureTheFlagPlayer extends Player
 			teamMates: teamMates,
 			otherTeam: otherTeam,
 			ownFlag: ownFlag,
-			otherFlag : otherFlag
+			otherFlag : otherFlag,
+			ownScore : ownScore,
+			otherScore : otherScore
 		});
 		var power = Math.max(0, Math.min(this.maxpower, strategyResult.power/10));
 		

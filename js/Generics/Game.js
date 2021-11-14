@@ -232,7 +232,7 @@ class Game
 				vector.amplify = 20; //got this with guess work, I'll have to go back and figure out the source of this number but I'm guessing it's the decay of velocity.
 				this.drawVector(vector);
 			} catch (e) {
-				try { CodeCollision.Editor.output(e); } catch (ex) { console.log(ex); };
+				try { CodeCollision.Editor.output(e); } catch (ex) { console.log(e); };
 			}
 		}
 	}
