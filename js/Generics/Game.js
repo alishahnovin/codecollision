@@ -225,11 +225,15 @@ class Game
 	{
 		for(let i=0;i<this.players.length;i++)
 		{
-			let vector = this.players[i].setDirection();
-			vector.radius = this.players[i].radius;
-			vector.color = this.players[i].color;
-			vector.amplify = 20; //got this with guess work, I'll have to go back and figure out the source of this number but I'm guessing it's the decay of velocity.
-			this.drawVector(vector);
+			try {
+				let vector = this.players[i].setDirection();
+				vector.radius = this.players[i].radius;
+				vector.color = this.players[i].color;
+				vector.amplify = 20; //got this with guess work, I'll have to go back and figure out the source of this number but I'm guessing it's the decay of velocity.
+				this.drawVector(vector);
+			} catch (e) {
+				try { CodeCollision.Editor.output(e); } catch (ex) { console.log(ex); };
+			}
 		}
 	}
 }

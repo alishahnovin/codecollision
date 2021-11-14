@@ -8,6 +8,7 @@ class Editor
 	strategySelection = false;
 	defaultStrategy = false;
 	defaultName = 'newStrategy';
+	lastMessage = '';
 	
 	//todo: there's a lot going on in here too...
 	
@@ -234,8 +235,11 @@ class Editor
 	
 	output(s)
 	{
-		this.console.value += ' > '+s+'\r\n';
+		var msg = (typeof s === 'string' || s instanceof String)? s : s.toString();
+		if (this.lastMessage==msg || msg=='') { return; }
+		this.console.value += ' > '+msg+'\r\n';
 		this.console.scrollTop = this.console.scrollHeight;
+		this.lastMessage = msg;
 	}
 	
 	show()

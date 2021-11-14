@@ -21,6 +21,7 @@ class CodeCollision
 	
 	static GameTypes =
 	{
+		'Capture the Flag':'capturetheflag',
 		'Floor is Lava':'floorislava',
 		'Soccer':'soccer',
 		'Soccer Chess':'soccerchess',
