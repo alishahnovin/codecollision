@@ -1,1 +1,1 @@
-The strategies listed here work for both Soccer and Soccer-Chess
+Some very basic strategies for Capture the Flag
