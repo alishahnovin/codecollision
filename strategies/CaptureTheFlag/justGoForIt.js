@@ -23,7 +23,9 @@ class justGoForIt extends CaptureTheFlagStrategy
 		teamMates, // [ {angle, distance, x, y} ]
 		otherTeam, // [ {angle, distance, x, y} ]
 		ownFlag, // {angle, distance, x, y}
-		otherFlag //{angle, distance, x, y}
+		otherFlag, //{angle, distance, x, y}
+		ownScore, //0, 1, 2, or 3 (game over)
+		otherScore //0, 1, 2, or 3 (game over)
 	})
 	{
 		return { angle: otherFlag.angle, power:100 };

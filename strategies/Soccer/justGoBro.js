@@ -25,7 +25,9 @@ class justGoBro extends SoccerStrategy
 		otherTeam, // [ {angle, distance, x, y} ]
 		ball, // {angle, distance, x, y}
 		ownGoal, //{ topPost{angle, distance, x, y},  bottomPost{angle, distance, x, y} }
-		otherGoal //{ topPost{angle, distance, x, y},  bottomPost{angle, distance, x, y} }
+		otherGoal, //{ topPost{angle, distance, x, y},  bottomPost{angle, distance, x, y} }
+		ownScore, //0, 1, 2, or 3 (game over)
+		otherScore //0, 1, 2, or 3 (game over)
 	})
 	{
 		return { angle: ball.angle, power:100 };
