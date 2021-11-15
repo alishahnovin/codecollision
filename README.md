@@ -73,7 +73,7 @@ Right now, the idea is anyone to host their own "events." That is:
 8. Select which strategies you want to have compete and hit **Start**.
 
 # Check out a demo
-[![code / collision demo](https://img.youtube.com/vi/89jUgw39IP8/0.jpg)](https://www.youtube.com/watch?v=89jUgw39IP8)
+[![code / collision demo](https://www.codecollision.dev/video.png)](https://www.youtube.com/watch?v=89jUgw39IP8)
 
 # Release Notes
 **[2021-11-11]** - code / collision is in pre-release. There's some definite code-cleanup that can be done, but in the interest of proving the concept, I'm making this available to a limited audience to help identify any issues, and where we can hopefully run an actual event together.
