@@ -20,8 +20,8 @@ class scaredyCat extends SoccerStrategy
 		id, //Represents the player on the field.  (Values: -1, 0, 1)
 		position, // { x, y }
 		field, // { width, height }
-		teamMates, // [ {angle, distance, x, y} ]
-		otherTeam, // [ {angle, distance, x, y} ]
+		teamMates, // [ {angle, distance, x, y, ball:{angle,distance} } ]
+		otherTeam, // [ {angle, distance, x, y, ball:{angle,distance} } ]
 		ball, // {angle, distance, x, y}
 		ownGoal, //{ topPost{angle, distance, x, y},  bottomPost{angle, distance, x, y} }
 		otherGoal, //{ topPost{angle, distance, x, y},  bottomPost{angle, distance, x, y} }
