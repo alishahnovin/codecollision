@@ -22,7 +22,7 @@ code / collision is an ever-expanding library of games that work on the same set
  - You are given the game-state in the parameters
  - You return 2 things: Angle you want to move, and overall Power.
 - Your code is called periodically, **once per player on your team**
-<p align="center"> <img src="https://www.codecollision.dev/git-game.png" alt="code / collision" /> </p>
+<p align="center"> <img src="https://www.codecollision.dev/git-codecollision.gif" alt="code / collision" /> </p>
 
 # How do I code my strategy?
 code / collision was built in vanilla JS. As long as you know some basic JavasScript, you can write a strategy:
