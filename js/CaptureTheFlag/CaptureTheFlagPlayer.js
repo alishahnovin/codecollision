@@ -17,6 +17,9 @@ class CaptureTheFlagPlayer extends Player
 			return { x:this.x, vx:0, y:this.y, vy:0 };
 		}
 		
+		let ownFlag = this.team==this.game.homeTeam? this.game.homeTeam.flag : this.game.awayTeam.flag;
+		let otherFlag = this.team==this.game.homeTeam? this.game.awayTeam.flag : this.game.homeTeam.flag;
+		
 		var teamMates = [];
 		var otherTeam = [];
 		for(let i=0;i<this.game.players.length;i++)
@@ -26,18 +29,20 @@ class CaptureTheFlagPlayer extends Player
 				continue;
 			}
 			
+			let playerVector = this.getVectorToPoint(this.game.players[i]);
+			let ownFlagVector = this.game.players[i].getVectorToPoint(ownFlag);
+			let otherFlagVector = this.game.players[i].getVectorToPoint(otherFlag);
+			playerVector.ownFlag = { angle: ownFlagVector.angle, distance: ownFlagVector.distance };
+			playerVector.otherFlag = { angle: otherFlagVector.angle, distance: otherFlagVector.distance };
 			if (this.game.players[i].team == this.team)
 			{
-				teamMates.push(this.getVectorToPoint(this.game.players[i]));
+				teamMates.push(playerVector);
 			}
 			else 
 			{
-				otherTeam.push(this.getVectorToPoint(this.game.players[i]));
+				otherTeam.push(playerVector);
 			}
 		}
-		
-		let ownFlag = this.team==this.game.homeTeam? this.getVectorToPoint(this.game.homeTeam.flag) : this.getVectorToPoint(this.game.awayTeam.flag);
-		let otherFlag = this.team==this.game.homeTeam? this.getVectorToPoint(this.game.awayTeam.flag) : this.getVectorToPoint(this.game.homeTeam.flag);
 		
 		let ownScore = this.team==this.game.homeTeam? this.game.homeTeam.score : this.game.awayTeam.score;
 		let otherScore = this.team==this.game.homeTeam? this.game.awayTeam.score : this.game.homeTeam.score;
@@ -49,8 +54,8 @@ class CaptureTheFlagPlayer extends Player
 			field: { width:this.game.fieldWidth, height:this.game.fieldHeight }, //zero origin everything
 			teamMates: teamMates,
 			otherTeam: otherTeam,
-			ownFlag: ownFlag,
-			otherFlag : otherFlag,
+			ownFlag: this.getVectorToPoint(ownFlag),
+			otherFlag : this.getVectorToPoint(otherFlag),
 			ownScore : ownScore,
 			otherScore : otherScore
 		});

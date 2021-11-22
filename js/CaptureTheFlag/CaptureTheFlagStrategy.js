@@ -18,8 +18,8 @@ class CaptureTheFlagStrategy extends Strategy
 		id, //Represents the player on the field (-1, 0, 1)
 		position, // { x, y }
 		field, // { width, height }
-		teamMates, // [ {angle, distance, x, y} ]
-		otherTeam, // [ {angle, distance, x, y} ]
+		teamMates, // [ {angle, distance, x, y, ownFlag:{angle, distance}, otherFlag:{angle, distance} } ]
+		otherTeam, // [ {angle, distance, x, y, ownFlag:{angle, distance}, otherFlag:{angle, distance} } ]
 		ownFlag, // {angle, distance, x, y}
 		otherFlag, //{angle, distance, x, y}
 		ownScore,  //0, 1, 2, or 3 (game over)

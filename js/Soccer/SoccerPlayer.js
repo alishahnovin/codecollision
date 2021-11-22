@@ -26,13 +26,16 @@ class SoccerPlayer extends Player
 				continue;
 			}
 			
+			let playerVector = this.getVectorToPoint(this.game.players[i]);
+			let ballVector = this.game.players[i].getVectorToPoint(this.game.ball);
+			playerVector.ball = { angle: ballVector.angle, distance: ballVector.distance };
 			if (this.game.players[i].team == this.team)
 			{
-				teamMates.push(this.getVectorToPoint(this.game.players[i]));
+				teamMates.push(playerVector);
 			}
 			else 
 			{
-				otherTeam.push(this.getVectorToPoint(this.game.players[i]));
+				otherTeam.push(playerVector);
 			}
 		}
 		
