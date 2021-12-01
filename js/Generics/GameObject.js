@@ -104,6 +104,6 @@ class GameObject
 	{
 		let distance = Math.sqrt((this.x - that.x)**2 + (this.y - that.y)**2);
 		let angle = Math.atan2(that.y - this.y, that.x - this.x)*180/Math.PI;
-		return { angle: this.isMirrored? (angle<0? 180+angle : angle-180) : -1*angle, distance: distance, x:this.isMirrored? this.game.fieldWidth-(that.x-this.game.fieldX) : that.x, y:that.y-this.game.fieldY };
+		return { angle: this.isMirrored? (angle<0? 180+angle : angle-180) : -1*angle, distance: distance, x:this.isMirrored? this.game.fieldWidth-(that.x-this.game.fieldX) : that.x-this.game.fieldX, y:that.y-this.game.fieldY };
 	}
 }
