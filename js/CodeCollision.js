@@ -21,11 +21,11 @@ class CodeCollision
 	
 	static GameTypes =
 	{
-		'Capture the Flag':'capturetheflag',
-		'Floor is Lava':'floorislava',
-		'Soccer':'soccer',
-		'Soccer Chess':'soccerchess',
-		'Sumo':'sumo',
+		'Capture the Flag':'CaptureTheFlag',
+		'Floor is Lava':'FloorIsLava',
+		'Soccer':'Soccer',
+		'Soccer Chess':'SoccerChess',
+		'Sumo':'Sumo',
 	};
 	static GameType = false;
 	
