@@ -1,15 +1,16 @@
 class SoccerPlayer extends Player
 {
 	maxpower=10;
-	radius=20;
 		
 	constructor(params)
 	{
 		super(params);
+		this.radius = MEDIUM;
 		this.id = params.id;
 		this.strategy = params.strategy;
 	}
 	
+	strategyImplementation = false;
 	setDirection()
 	{
 		if (this.strategy===undefined)
@@ -45,8 +46,8 @@ class SoccerPlayer extends Player
 		let ownScore = this.team==this.game.homeTeam? this.game.homeTeam.score : this.game.awayTeam.score;
 		let otherScore = this.team==this.game.homeTeam? this.game.awayTeam.score : this.game.homeTeam.score;
 		
-		var strategy = new this.strategy();
-		var strategyResult = strategy.execute({
+		this.strategyImplementation = new this.strategy();
+		let strategyResult = this.strategyImplementation.execute({
 			id:this.id,
 			position: { x: this.isMirrored? this.game.fieldWidth-(this.x-this.game.fieldX) : this.x-this.game.fieldX, y:this.y-this.game.fieldY },
 			field: { width:this.game.fieldWidth, height:this.game.fieldHeight }, //zero origin everything
@@ -58,11 +59,12 @@ class SoccerPlayer extends Player
 			ownScore : ownScore,
 			otherScore : otherScore
 		});
-		var power = Math.max(0, Math.min(this.maxpower, strategyResult.power/10));
+		let power = Math.max(0, Math.min(this.maxpower, strategyResult.power/10));
 		
 		this.angle = this.isMirrored? 180+strategyResult.angle : strategyResult.angle*-1;
-		this.vx = (power * Math.cos(this.angle * Math.PI / 180));
-		this.vy = (power * Math.sin(this.angle * Math.PI / 180));
+		console.log((this.radius/MEDIUM));
+		this.vx = (power * Math.cos(this.angle * Math.PI / 180)) * (MEDIUM/this.radius);
+		this.vy = (power * Math.sin(this.angle * Math.PI / 180)) * (MEDIUM/this.radius);
 		
 		return { x:this.x, vx:this.vx, y:this.y, vy:this.vy };
 	};

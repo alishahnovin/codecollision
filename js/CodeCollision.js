@@ -25,6 +25,7 @@ class CodeCollision
 		'Floor is Lava':'FloorIsLava',
 		'Soccer':'Soccer',
 		'Soccer Chess':'SoccerChess',
+		'Soccer SML':'SoccerSML',
 		'Sumo':'Sumo',
 	};
 	static GameType = false;
