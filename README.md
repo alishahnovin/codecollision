@@ -78,4 +78,6 @@ Right now, the idea is anyone to host their own "events." That is:
 [![code / collision demo](https://www.codecollision.dev/video.png)](https://www.youtube.com/watch?v=89jUgw39IP8)
 
 # Release Notes
+**[2021-12-19]** - After a few tournaments, I decided to add a new game: Basically 'soccer' only with different player masses. Participants can choose their team-makeup.
+
 **[2021-11-11]** - code / collision is in pre-release. There's some definite code-cleanup that can be done, but in the interest of proving the concept, I'm making this available to a limited audience to help identify any issues, and where we can hopefully run an actual event together.
