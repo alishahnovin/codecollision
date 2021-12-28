@@ -218,6 +218,7 @@ button
 	font:12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
 	outline:none;
 }
+.console p { margin:0px; padding:0px; }
 .editorToolbar button, .editorToolbar select {
 	width:auto;
 	margin:0px 10px;

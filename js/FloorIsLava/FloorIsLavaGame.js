@@ -25,8 +25,9 @@ class FloorIsLavaGame extends Game
 		super(params);
 		this.setSize({ width:700, height:700, marginX:200, marginY: 200});
 		
-		this.fieldRadius = (this.width - (this.marginX*2))/2;
-		this.canvas.style.borderRadius = this.fieldRadius+'px';
+		this.field = new CircularField({ centerX: this.canvas.width/2, centerY: this.canvas.height/2, radius:(this.width - (this.marginX*2))/2, isWalled:false });
+		this.canvas.style.borderRadius = this.field.radius+'px';
+		
 		
 		for(let id in this.initialPositions)
 		{
@@ -49,7 +50,7 @@ class FloorIsLavaGame extends Game
 		this.context.lineWidth = Math.min(this.strokeWidth*this.scale);
 		
 		this.context.beginPath();
-		this.context.arc(this.canvas.width/2, this.canvas.height/2, this.fieldRadius*this.scale, 0, 2 * Math.PI);
+		this.context.arc(this.field.centerX, this.field.centerY, this.field.radius*this.scale, 0, 2 * Math.PI);
 		this.context.fillStyle = this.fieldColor;
 		this.context.fill();
 		this.context.closePath();
@@ -79,7 +80,7 @@ class FloorIsLavaGame extends Game
 		this.context.save();
 		this.context.beginPath();
 		this.context.moveTo(this.canvas.width/2, this.canvas.height/2);
-		this.context.arc(this.canvas.width/2, this.canvas.height/2, this.fieldRadius*this.scale, 0, 2 * Math.PI);
+		this.context.arc(this.canvas.width/2, this.canvas.height/2, this.field.radius*this.scale, 0, 2 * Math.PI);
 		this.context.fillStyle = this.fieldLines;
 		this.context.globalCompositeOperation = "destination-in";
 		this.context.fill();
@@ -90,8 +91,8 @@ class FloorIsLavaGame extends Game
 		
 		this.setInfoLabelPositions(
 		{
-			homeLabelPosition:{x:(this.fieldX - this.strokeWidth*2)*this.scale,y:(this.fieldY+this.fieldHeight/2)*this.scale, align:'right'},
-			awayLabelPosition:{x:(this.fieldX+this.fieldWidth+ this.strokeWidth*2)*this.scale,y:(this.fieldY+this.fieldHeight/2)*this.scale, align:'left'}
+			homeLabelPosition:{x:(this.marginX - this.strokeWidth*2)*this.scale,y:(this.marginY+(this.width - (this.marginX*2))/2)*this.scale, align:'right'},
+			awayLabelPosition:{x:(this.marginX+(this.width - (this.marginX*2))+ this.strokeWidth*2)*this.scale,y:(this.marginY+(this.height - (this.marginY*2))/2)*this.scale, align:'left'}
 		});};
 	
 	nextMove()
@@ -100,8 +101,8 @@ class FloorIsLavaGame extends Game
 		
 		let holeRadius = Math.floor(Math.random() * (this.holeRadiusMax - this.holeRadiusMin)) + this.holeRadiusMin;
 		let angle = Math.random() * 360;
-		let holeX = Math.random() *this.fieldRadius * Math.sin(angle);
-		let holeY = Math.random() *this.fieldRadius * Math.cos(angle);
+		let holeX = Math.random() *this.field.radius * Math.sin(angle);
+		let holeY = Math.random() *this.field.radius * Math.cos(angle);
 		this.holes.push({ x:holeX , y:holeY, radius:holeRadius});
 		
 		this.redraw();
@@ -117,7 +118,7 @@ class FloorIsLavaGame extends Game
 		for(let i=0;i<this.players.length;i++)
 		{
 			let distance = Math.sqrt((this.players[i].x*this.scale - this.canvas.width/2)**2 + (this.players[i].y*this.scale - this.canvas.height/2)**2);
-			if (distance>this.fieldRadius*this.scale)
+			if (distance>this.field.radius*this.scale)
 			{
 				removeItem.push(this.players[i]);
 			}

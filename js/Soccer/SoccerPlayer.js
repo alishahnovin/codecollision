@@ -62,7 +62,6 @@ class SoccerPlayer extends Player
 		let power = Math.max(0, Math.min(this.maxpower, strategyResult.power/10));
 		
 		this.angle = this.isMirrored? 180+strategyResult.angle : strategyResult.angle*-1;
-		console.log((this.radius/MEDIUM));
 		this.vx = (power * Math.cos(this.angle * Math.PI / 180)) * (MEDIUM/this.radius);
 		this.vy = (power * Math.sin(this.angle * Math.PI / 180)) * (MEDIUM/this.radius);
 		

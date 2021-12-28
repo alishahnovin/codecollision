@@ -19,8 +19,8 @@ class SumoGame extends Game
 		super(params);
 		this.setSize({ width:700, height:700, marginX:200, marginY: 200});
 		
-		this.fieldRadius = (this.width - (this.marginX*2))/2;
-		this.canvas.style.borderRadius = this.fieldRadius+'px';
+		this.field = new CircularField({ centerX: this.canvas.width/2, centerY: this.canvas.height/2, radius:(this.width - (this.marginX*2))/2, isWalled:false });
+		this.canvas.style.borderRadius = this.field.radius+'px';
 		
 		for(let id in this.initialPositions)
 		{
@@ -43,9 +43,9 @@ class SumoGame extends Game
 		this.context.lineWidth = Math.min(this.strokeWidth*this.scale);
 		
 		this.context.beginPath();
-		this.context.arc(this.canvas.width/2, this.canvas.height/2, this.fieldRadius*this.scale, 0, 2 * Math.PI);
-		this.context.moveTo(this.canvas.width/2, this.canvas.height/2 - this.fieldRadius*this.scale);
-		this.context.lineTo(this.canvas.width/2, this.canvas.height/2 + this.fieldRadius*this.scale);
+		this.context.arc(this.field.centerX, this.field.centerY, this.field.radius*this.scale, 0, 2 * Math.PI);
+		this.context.moveTo(this.canvas.width/2, this.canvas.height/2 - this.field.radius*this.scale);
+		this.context.lineTo(this.canvas.width/2, this.canvas.height/2 + this.field.radius*this.scale);
 		this.context.closePath();
 		this.context.stroke();
 		
@@ -53,9 +53,9 @@ class SumoGame extends Game
 		
 		this.setInfoLabelPositions(
 		{
-			homeLabelPosition:{x:(this.fieldX - this.strokeWidth*2)*this.scale,y:(this.fieldY+this.fieldHeight/2)*this.scale, align:'right'},
-			awayLabelPosition:{x:(this.fieldX+this.fieldWidth+ this.strokeWidth*2)*this.scale,y:(this.fieldY+this.fieldHeight/2)*this.scale, align:'left'},
-			timeLabelPosition:{x:this.canvas.width/2,y:this.canvas.height/2 - (this.fieldRadius+10)*this.scale}
+			homeLabelPosition:{x:(this.marginX - this.strokeWidth*2)*this.scale,y:(this.marginY+(this.width - (this.marginX*2))/2)*this.scale, align:'right'},
+			awayLabelPosition:{x:(this.marginX+(this.width - (this.marginX*2))+ this.strokeWidth*2)*this.scale,y:(this.marginY+(this.height - (this.marginY*2))/2)*this.scale, align:'left'},
+			timeLabelPosition:{x:this.canvas.width/2,y:this.canvas.height/2 - (this.field.radius+10)*this.scale}
 		});
 	};
 	
@@ -67,7 +67,7 @@ class SumoGame extends Game
 		for(let i=0;i<this.players.length;i++)
 		{
 			let distance = Math.sqrt((this.players[i].x*this.scale - this.canvas.width/2)**2 + (this.players[i].y*this.scale - this.canvas.height/2)**2);
-			if (distance>this.fieldRadius*this.scale)
+			if (distance>this.field.radius*this.scale)
 			{
 				removeItem.push(this.players[i]);
 			}

@@ -11,6 +11,7 @@ class GameObject
 		this.x = x?? 0;
 		this.y = y?? 0;
 		this.isMirrored = isMirrored?? false;
+		this.radius = radius;
 	
 		this.initialX = this.x;
 		this.initialY = this.y;
@@ -35,15 +36,9 @@ class GameObject
 	
 	boundaryCollision()
 	{
-		if ((this.x - this.radius<this.game.fieldX && this.vx<0) || (this.x + this.radius > this.game.fieldX+this.game.fieldWidth && this.vx>0))
-		{
-			this.vx *= -1;
-		}
-		
-		if ((this.y - this.radius<this.game.fieldY && this.vy<0)||(this.y + this.radius > this.game.fieldY + this.game.fieldHeight && this.vy>0))
-		{
-			this.vy *= -1;
-		}
+		var collision = this.game.field.checkCollision(this);
+		this.vx *= collision.x;
+		this.vy *= collision.y;
 	};
 	
 	objectCollision(that)
@@ -104,6 +99,6 @@ class GameObject
 	{
 		let distance = Math.sqrt((this.x - that.x)**2 + (this.y - that.y)**2);
 		let angle = Math.atan2(that.y - this.y, that.x - this.x)*180/Math.PI;
-		return { angle: this.isMirrored? (angle<0? 180+angle : angle-180) : -1*angle, distance: distance, x:this.isMirrored? this.game.fieldWidth-(that.x-this.game.fieldX) : that.x-this.game.fieldX, y:that.y-this.game.fieldY };
+		return { angle: this.isMirrored? (angle<0? 180+angle : angle-180) : -1*angle, distance: distance, x:this.isMirrored? this.game.field.width-(that.x-this.game.field.x) : that.x-this.game.field.x, y:that.y-this.game.field.y };
 	}
 }

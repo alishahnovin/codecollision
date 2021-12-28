@@ -18,6 +18,7 @@ class CaptureTheFlagGame extends Game
 	{
 		super(params);
 		this.setSize({ width:1200, height:700, marginX:200, marginY: 200});
+		this.field = new RectangularField({ x:this.marginX, y:this.marginY, width:this.width - (this.marginX*2), height:this.height - (this.marginY*2), isWalled:true });
 		
 		for(let key in this.initialPositions)
 		{
@@ -25,13 +26,13 @@ class CaptureTheFlagGame extends Game
 			this.awayTeam.addPlayer(key, this.width * this.initialPositions[key].away.x, this.height * this.initialPositions[key].away.y);
 		}
 		
-		this.homeTeam.flag = new CaptureTheFlagFlag({ game: this, x: this.fieldX+this.canvas.width/20, y: this.height/2, color: this.homeTeam.color });
+		this.homeTeam.flag = new CaptureTheFlagFlag({ game: this, x: this.field.x+this.canvas.width/20, y: this.height/2, color: this.homeTeam.color });
 		this.objects.push(this.homeTeam.flag);
-		this.awayTeam.flag = new CaptureTheFlagFlag({ game: this, x: this.fieldX+this.fieldWidth-this.canvas.width/20, y: this.height/2, color: this.awayTeam.color });
+		this.awayTeam.flag = new CaptureTheFlagFlag({ game: this, x: this.field.x+this.field.width-this.canvas.width/20, y: this.height/2, color: this.awayTeam.color });
 		this.objects.push(this.awayTeam.flag);
 		
-		this.homeTeam.regionX = this.fieldX+this.canvas.width/10;
-		this.awayTeam.regionX = this.fieldX+this.fieldWidth-this.canvas.width/10;
+		this.homeTeam.regionX = this.field.x+this.canvas.width/10;
+		this.awayTeam.regionX = this.field.x+this.field.width-this.canvas.width/10;
 		
 		this.isReady = true;
 		this.redraw();
@@ -48,10 +49,10 @@ class CaptureTheFlagGame extends Game
 		this.context.lineCap = 'round';
 		this.context.lineWidth = Math.min(this.strokeWidth*this.scale);
 		
-		var x1 = this.fieldX*this.scale+this.context.lineWidth/2;
-		var y1 = this.fieldY*this.scale+this.context.lineWidth/2;
-		var x2 = this.fieldWidth*this.scale-this.context.lineWidth + x1;
-		var y2 = this.fieldHeight*this.scale-this.context.lineWidth + y1;
+		var x1 = this.field.x*this.scale+this.context.lineWidth/2;
+		var y1 = this.field.y*this.scale+this.context.lineWidth/2;
+		var x2 = this.field.width*this.scale-this.context.lineWidth + x1;
+		var y2 = this.field.height*this.scale-this.context.lineWidth + y1;
 		
 		this.context.beginPath();
 		this.context.strokeStyle = this.homeTeam.color;

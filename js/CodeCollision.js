@@ -15,7 +15,7 @@ class CodeCollision
 	
 	static IsDemo = false;
 	
-	//tod: this whole class has gotten really large, too many responsibilities - need to break it up
+	//todo: this whole class has gotten really large, too many responsibilities - need to break it up
 	
 	//bug: when close editor and then stop game... error on hometeam.strategy.name 
 	
@@ -167,6 +167,16 @@ class CodeCollision
 		}
 	}
 	
+	static Log(msg)
+	{
+		try {
+			if (CodeCollision.Editor && CodeCollision.Editor.enabled)
+			{
+				CodeCollision.Editor.output(msg);
+			}
+		} catch (e) { console.log(e); }
+	}
+	
 	static LoadStrategies(e)
 	{
 		let filesToLoad = 0;
@@ -251,6 +261,7 @@ class CodeCollision
 	
 	static PresentGameOptions()
 	{
+		CodeCollision.Game = null;
 		CodeCollision.Container.innerHTML = '';
 		
 		CodeCollision.Container.className = "gameContainer";

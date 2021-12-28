@@ -18,9 +18,10 @@ class SoccerGame extends Game
 	{
 		super(params);
 		this.setSize({ width:1200, height:700, marginX:200, marginY: 200});
+		this.field = new RectangularField({ x:this.marginX, y:this.marginY, width:this.width - (this.marginX*2), height:this.height - (this.marginY*2), isWalled:true });
 		
-		this.homeTeam.net = new SoccerNet({ x: this.fieldX, y:this.fieldY+this.fieldHeight/2 });
-		this.awayTeam.net = new SoccerNet({ x: this.fieldX + this.fieldWidth, y:this.fieldY+this.fieldHeight/2 })
+		this.homeTeam.net = new SoccerNet({ x: this.field.x, y:this.field.y+this.field.height/2 });
+		this.awayTeam.net = new SoccerNet({ x: this.field.x + this.field.width, y:this.field.y+this.field.height/2 })
 		
 		for(let key in this.initialPositions)
 		{
@@ -46,10 +47,10 @@ class SoccerGame extends Game
 		this.context.lineCap = 'round';
 		this.context.lineWidth = Math.min(this.strokeWidth*this.scale);
 		
-		var x1 = this.fieldX*this.scale+this.context.lineWidth/2;
-		var y1 = this.fieldY*this.scale+this.context.lineWidth/2;
-		var x2 = this.fieldWidth*this.scale-this.context.lineWidth + x1;
-		var y2 = this.fieldHeight*this.scale-this.context.lineWidth + y1;
+		var x1 = this.field.x*this.scale+this.context.lineWidth/2;
+		var y1 = this.field.y*this.scale+this.context.lineWidth/2;
+		var x2 = this.field.width*this.scale-this.context.lineWidth + x1;
+		var y2 = this.field.height*this.scale-this.context.lineWidth + y1;
 		
 		this.context.beginPath();
 		this.context.rect(x1,y1,x2-x1, y2-y1);

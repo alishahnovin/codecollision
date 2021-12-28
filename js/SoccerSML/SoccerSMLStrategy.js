@@ -28,7 +28,18 @@ class SoccerSMLStrategy extends Strategy
 	})
 	{
 		//call initSize() to set player size; possible values: SMALL, MEDIUM, LARGE
-		this.initSize(id==0? SMALL : LARGE); //initializes player to SMALL 
+		if(Math.floor(Math.random()*3)==1)
+		{
+			this.initSize(LARGE); //initializes player to LARGE 
+		}
+		else if(Math.floor(Math.random()*2)==1)
+		{
+			this.initSize(SMALL); //initializes player to LARGE 
+		}
+		else
+		{
+			this.initSize(MEDIUM); //initializes player to LARGE 
+		}
 		
 		return { angle:0, power: 10 };
 	};

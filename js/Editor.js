@@ -9,6 +9,8 @@ class Editor
 	defaultStrategy = false;
 	defaultName = 'newStrategy';
 	lastMessage = '';
+	lastMessagePlaceholder = false;
+	lastMessageCount = 0;
 	
 	//todo: there's a lot going on in here too...
 	
@@ -51,9 +53,8 @@ class Editor
 		this.editor.setTheme("ace/theme/chrome");
 		this.editor.session.setMode("ace/mode/javascript");
 
-		this.console = document.createElement("textarea");
+		this.console = document.createElement("div");
 		this.console.className = "console";
-		this.console.readOnly = true;
 		this.Container.appendChild(this.console);
 		
 		let toolbar = document.createElement('div');
@@ -235,16 +236,45 @@ class Editor
 	
 	output(s)
 	{
-		var msg = (typeof s === 'string' || s instanceof String)? s : s.toString();
-		if (this.lastMessage==msg || msg=='') { return; }
-		this.console.value += ' > '+msg+'\r\n';
+		var msg = ''; var color = '#000000';
+		if (typeof s === 'string' || s instanceof String)
+		{
+			msg = s;
+		}
+		else if (s instanceof Error)
+		{
+			color = '#CC0000';
+			msg = s.message + (s.fileName?'('+s.fileName+':'+s.lineNumber+')' : '');
+		}
+		else
+		{
+			msg = s.toString();
+		}
+		
+		
+		if (msg=='') { return; }
+		else if (this.lastMessage==msg)
+		{
+			this.lastMessageCount++;
+			this.lastMessagePlaceholder.innerHTML = '&nbsp;('+this.lastMessageCount+')';
+			return;
+		}
+		
+		this.lastMessageCount=1;
+		let entry = document.createElement("p");
+		entry.style = 'color:'+color;
+		entry.innerHTML = '&nbsp;>&nbsp;'+msg;
+		this.lastMessagePlaceholder = document.createElement("span");
+		entry.appendChild(this.lastMessagePlaceholder);
+		this.console.appendChild(entry);
+		
 		this.console.scrollTop = this.console.scrollHeight;
 		this.lastMessage = msg;
 	}
 	
 	show()
 	{
-		this.console.value = '';
+		this.console.innerHTML = '';
 		this.strategies = [];
 		this.defaultStrategy = CodeCollision.GameTypes[CodeCollision.GameType.label].baseStrategy;
 		this.defaultStrategy.label = this.defaultName;
@@ -267,6 +297,7 @@ class Editor
 			CodeCollision.Unregister(this.strategies[i]);
 		}
 		CodeCollision.PresentGameOptions();
+		this.editor.setValue('', -1);
 	}
 	
 	getCode(label)

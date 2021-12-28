@@ -12,13 +12,10 @@ class Game
 	
 	players = [];
 	objects = [];
+	boundaryFlat = true;
 	
 	constructor({ homeStrategy, awayStrategy, playerType, teamType, isEditMode })
 	{
-		this.fieldX = 0;
-		this.fieldY = 0;
-		this.fieldWidth = 0;
-		this.fieldHeight = 0;
 		this.fieldRadius = 0;
 		
 		this.canvas  = document.createElement("canvas");
@@ -55,11 +52,6 @@ class Game
 		this.canvas.width = this.width * this.scale;
 		this.canvas.height = this.height * this.scale;
 		this.paused = false;
-		
-		this.fieldX = this.marginX;
-		this.fieldY = this.marginY;
-		this.fieldWidth = this.width - (this.marginX*2);
-		this.fieldHeight = this.height - (this.marginY*2);
 	}
 	
 	setInfoLabelPositions({ homeLabelPosition, awayLabelPosition, timeLabelPosition })
@@ -196,28 +188,33 @@ class Game
 			return;
 		}
 		
-		this.checkGameConditions();
-		this.checkCollisions();
-		let isThereMovement = false;
-		for(let i=0;i<this.objects.length;i++)
-		{
-			this.objects[i].advance();
-			if (Math.abs(this.objects[i].vx)>=0.25 || Math.abs(this.objects[i].vy)>=0.25)
+		try {
+			this.checkGameConditions();
+			this.checkCollisions();
+			let isThereMovement = false;
+			for(let i=0;i<this.objects.length;i++)
 			{
-				isThereMovement = true;
+				this.objects[i].advance();
+				if (Math.abs(this.objects[i].vx)>=0.25 || Math.abs(this.objects[i].vy)>=0.25)
+				{
+					isThereMovement = true;
+				}
+			}
+			if (isThereMovement)
+			{
+				this.redraw();
+			}
+			else
+			{
+				this.redraw();
+				this.paused = true;
+				this.nextMove();
+				setTimeout(function(game) { game.paused = false; }, 1000, this);
 			}
 		}
-		
-		if (isThereMovement)
+		catch (e)
 		{
-			this.redraw();
-		}
-		else
-		{
-			this.redraw();
-			this.paused = true;
-			this.nextMove();
-			setTimeout(function(game) { game.paused = false; }, 1000, this);
+			CodeCollision.Log(e);
 		}
 	}
 	
@@ -232,7 +229,7 @@ class Game
 				vector.amplify = 20; //got this with guess work, I'll have to go back and figure out the source of this number but I'm guessing it's the decay of velocity.
 				this.drawVector(vector);
 			} catch (e) {
-				try { CodeCollision.Editor.output(e); } catch (ex) { console.log(e); };
+				try { CodeCollision.Log(e); } catch (ex) { console.log(e); };
 			}
 		}
 	}
