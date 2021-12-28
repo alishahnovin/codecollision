@@ -217,6 +217,7 @@ button
 	border-top:2px solid #50514F;
 	font:12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
 	outline:none;
+	overflow-y:scroll;
 }
 .console p { margin:0px; padding:0px; }
 .editorToolbar button, .editorToolbar select {

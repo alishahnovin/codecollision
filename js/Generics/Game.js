@@ -96,6 +96,7 @@ class Game
 			{
 				this.context.beginPath();
 				this.context.arc(this.objects[i].x* this.scale, this.objects[i].y* this.scale, this.objects[i].radius * this.scale, 0, 2 * Math.PI);
+				
 				this.context.fillStyle = this.objects[i].color;
 				this.context.closePath();
 				this.context.fill();

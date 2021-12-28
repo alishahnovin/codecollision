@@ -37,8 +37,11 @@ class GameObject
 	boundaryCollision()
 	{
 		var collision = this.game.field.checkCollision(this);
-		this.vx *= collision.x;
-		this.vy *= collision.y;
+		if (collision.collided)
+		{
+			this.vx *= collision.x;
+			this.vy *= collision.y;
+		}
 	};
 	
 	objectCollision(that)

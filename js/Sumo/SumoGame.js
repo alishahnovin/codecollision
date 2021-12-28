@@ -19,7 +19,7 @@ class SumoGame extends Game
 		super(params);
 		this.setSize({ width:700, height:700, marginX:200, marginY: 200});
 		
-		this.field = new CircularField({ centerX: this.canvas.width/2, centerY: this.canvas.height/2, radius:(this.width - (this.marginX*2))/2, isWalled:false });
+		this.field = new CircularField({ game:this, centerX: this.canvas.width/2, centerY: this.canvas.height/2, radius:(this.width - (this.marginX*2))/2, isWalled:false });
 		this.canvas.style.borderRadius = this.field.radius+'px';
 		
 		for(let id in this.initialPositions)

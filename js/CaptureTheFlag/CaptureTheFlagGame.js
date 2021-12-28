@@ -18,7 +18,7 @@ class CaptureTheFlagGame extends Game
 	{
 		super(params);
 		this.setSize({ width:1200, height:700, marginX:200, marginY: 200});
-		this.field = new RectangularField({ x:this.marginX, y:this.marginY, width:this.width - (this.marginX*2), height:this.height - (this.marginY*2), isWalled:true });
+		this.field = new RectangularField({ game:this, x:this.marginX, y:this.marginY, width:this.width - (this.marginX*2), height:this.height - (this.marginY*2), isWalled:true });
 		
 		for(let key in this.initialPositions)
 		{

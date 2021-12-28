@@ -268,6 +268,11 @@ class Editor
 		entry.appendChild(this.lastMessagePlaceholder);
 		this.console.appendChild(entry);
 		
+		if (this.console.children.length>500)
+		{
+			this.console.children[0].remove();
+		}
+		
 		this.console.scrollTop = this.console.scrollHeight;
 		this.lastMessage = msg;
 	}
