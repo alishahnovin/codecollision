@@ -34,7 +34,7 @@ function addScripts(srcs, onComplete)
 	document.head.appendChild(script);
 }
 require([
-'https://pagecdn.io/lib/ace/1.4.12/ace.js',
+'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js',
 'js/CodeCollision.js',
 'js/Editor.js',
  'js/Generics/Game.js',
