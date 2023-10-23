@@ -49,8 +49,8 @@ class SoccerPlayer extends Player
 		this.strategyImplementation = new this.strategy();
 		let strategyResult = this.strategyImplementation.execute({
 			id:this.id,
-			position: { x: this.isMirrored? this.game.fieldWidth-(this.x-this.game.fieldX) : this.x-this.game.fieldX, y:this.y-this.game.fieldY },
-			field: { width:this.game.fieldWidth, height:this.game.fieldHeight }, //zero origin everything
+			position: { x: this.isMirrored? this.game.field.width-(this.x-this.game.field.x) : this.x-this.game.field.x, y:this.y-this.game.field.y },
+			field: { width:this.game.field.width, height:this.game.field.height }, //zero origin everything
 			teamMates: teamMates,
 			otherTeam: otherTeam,
 			ball: this.getVectorToPoint(this.game.ball),
